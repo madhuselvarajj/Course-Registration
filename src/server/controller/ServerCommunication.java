@@ -40,17 +40,30 @@ public class ServerCommunication {
 		while(true) {
 			try {
 				line = (String)in.readObject(); //reads the code
-				if(line.equals("EXIT")) { //if code == "EXIT" then break loop
+				if(line.equals(6)) { //if code == "EXIT" then break loop
 					out.writeObject("Bye");
 					break;
-				}else if(line.equals("ADD")) { //if code == "ADD" then read the object
+				}else if(line.equals(5)) { //if code == "ADD" then read the object
 					Object temp = in.readObject();
 					addObject(temp);
 				}
-				else {
+				else if (line.equals(4)) {
 					out.writeObject("Error in reading code");
 					break;
 				}
+                else if (line.equals(3)) {
+                    
+                }
+                else if (line.equals(2)) {
+                    
+                }
+                else if (line.equals(1)) {
+                    
+                }
+                else {
+                    out.writeObject("Error. Program terminating.");
+                    break;
+                }
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}

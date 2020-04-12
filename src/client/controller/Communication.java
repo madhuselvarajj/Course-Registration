@@ -29,30 +29,36 @@ public class Communication {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	/**
 	 * Sends just the code to the server
 	 * @param code
 	 * @return the response of the server
 	 */
-	public String sendCode(String code) {
-		String response = "";
+	public void sendCode(int code) {
 		try {
 			out.writeObject(code);
-			response = (String)in.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return response;
 	}
+    
+    public String getServerResponse () {
+        String response = "";
+        try {
+            response = (String)in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
 	/**
 	 * Sends an object with a code to the server	
 	 * @param code tells the server what to do with the object
 	 * @param obj
 	 * @return
 	 */
-	public Object sendObjectWithCode(String code, Object obj) {
+	public Object sendObjectWithCode(int code, Object obj) {
 		Object temp = null;
 		try {
 			out.writeObject(code); //send the code first
@@ -63,6 +69,7 @@ public class Communication {
 		}
 		return temp;
 	}
+    
 	public static void main (String [] args) {
 		MainFrame m = new MainFrame();
 		Communication c = new Communication("localhost", 1010); 
