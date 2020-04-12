@@ -38,7 +38,7 @@ public class Communication {
 	public void sendCode(int code) {
 		try {
 			out.writeObject(code);
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

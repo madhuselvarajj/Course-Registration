@@ -50,7 +50,7 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayMainFrame();
+                mainFrame.displayMainFrame();
             }
             
         });
@@ -80,7 +80,8 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode (2);
-                mainFrame.askForCourseInfo();
+                mainFrame.askForCourseInfo(); 
+                //might have to call another method that allows user to also enter their id and the section number they want to add
                 
             }
             
