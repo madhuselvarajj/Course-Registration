@@ -44,7 +44,7 @@ public class ServerCommunication {
 	 * First reads the code, then depending on the code it will call another method or exit
 	 */
 	public void communicateWithClient() {
-		int code = 0;
+		Integer code = 0;
 		while(true) {
 			try {
 				code = (Integer)in.readObject(); //reads the code
@@ -70,6 +70,7 @@ public class ServerCommunication {
 				}else if(code.equals(4)) { //display catalogue
 					displayAllCourses();
 				}else if(code.equals(5)) { //display student's courses
+					System.out.println("in 5");
 					String studentId = (String)in.readObject();
 					viewAllCoursesTakenByStudent(studentId);
 				}else if(code.equals(6)) { //exit
@@ -102,7 +103,10 @@ public class ServerCommunication {
 				out.writeObject("Id not valid");
 				return;
 			}
-			out.writeObject(studentObj.printRegList());
+			if(studentObj.getRegList().size()==0)
+				out.writeObject(studentObj.getName() + " is not registered in any courses");
+			else
+				out.writeObject(studentObj.printRegList());
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -125,6 +129,7 @@ public class ServerCommunication {
 			Integer courseNum = Integer.parseInt(cNum);
 			Integer sectionNum = Integer.parseInt(secNum);		
 			
+			//verify student is in the database
 			Student studentObj = findStudent(id);
 			if(studentObj == null) {
 				out.writeObject("Id not valid");
@@ -186,25 +191,30 @@ public class ServerCommunication {
 			Integer courseNum = Integer.parseInt(num);
 			Integer sectionNum = Integer.parseInt(secNum);
 			
-			//find the student in the database
+			//verify the student is in the database
 			Student studentObj = findStudent(id);
 			if(studentObj == null) {
 				out.writeObject("Id not valid");
 				return;
 			}
 			
+			//find location ofStudentObj in database
+			int index = findStudentLocation(studentObj);
+			
+			//find the course to register the student in
 			Course theCourse = findCourse(courseNum, courseName);
 			if(theCourse == null) {
 				out.writeObject("Course does not exist");
 				return;
 			}
 			
+			//find the offering to register the student in
 			CourseOffering theOffering = findOffering(sectionNum, theCourse);
 			if(theOffering == null) {
 				out.writeObject("Offering does not exist");
 				return;
 			}
-			Registration regObj = new Registration(theStudent, theOffering);
+			Registration regObj = new Registration(dataBase.getStudentList().get(index), theOffering);
 			//add this object to both the student and the offering's regList
 			if(regObj.addRegistration()) {
 				out.writeObject("Registration complete");
@@ -219,6 +229,17 @@ public class ServerCommunication {
 		
 	}
 	
+	private int findStudentLocation(Student studentObj) {
+		int i = 0;
+		for(Student s: dataBase.getStudentList()) {
+			if(studentObj.getId() == s.getId()) {
+				break;
+			}
+			i++;
+		}
+		return i;
+	}
+
 	private CourseOffering findOffering(Integer sectionNum, Course theCourse) {
 		CourseOffering theOffering = null;
 		for(CourseOffering o: theCourse.getOfferingList()) {

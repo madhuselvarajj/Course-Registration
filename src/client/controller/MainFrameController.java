@@ -87,17 +87,16 @@ public class MainFrameController {
                 try {
 					communication.out.writeObject(mainFrame.studentID.getText());
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-                mainFrame.displayMessage (communication.getServerResponse());
+                mainFrame.displayMessage(communication.getServerResponse());
             }
             
         });
         
         
         
-        //anonymous listener class for the "cancel" button
+//        anonymous listener class for the "cancel" button
         mainFrame.cancel.addActionListener(new ActionListener ( ) {
             
             @Override
@@ -116,7 +115,7 @@ public class MainFrameController {
             public void actionPerformed(ActionEvent e) {
 //                communication.sendCode ("1");
             	try {
-					communication.out.writeObject("1");
+					communication.out.writeObject(1);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -138,7 +137,6 @@ public class MainFrameController {
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode (2);
                 mainFrame.addOrRemoveCourse();
-                //might have to call another method that allows user to also enter their id and the section number they want to add
                 
             }
             
@@ -174,13 +172,18 @@ public class MainFrameController {
         
         //code : 5
         //anonymous listener class for the "view all courses taken by student" button
-        //this will only send a code to the socket.
+        //this will send code and student id to the socket
         mainFrame.viewAllStud.addActionListener (new ActionListener () {
             
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(5);
-                mainFrame.viewAllCourses();
+                String input = mainFrame.viewAllCourses();
+                try {
+					communication.out.writeObject(input);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
                 mainFrame.displayMessage(communication.getServerResponse());
                 
             }

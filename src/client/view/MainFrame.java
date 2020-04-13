@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -71,19 +72,18 @@ public class MainFrame extends JFrame{
         setVisible(true);
     }
     
-    public void viewAllCourses () {
-        remove(thePanel);
-        thePanel = new JPanel();
-        thePanel.add(studentID);
-        thePanel.add(view);
-        thePanel.add(cancel);
-        add(thePanel);
-        thePanel.setVisible(true);
-        setVisible(true);
+    public String viewAllCourses () {
+//        remove(thePanel);
+//        thePanel = new JPanel();
+//        thePanel.add(studentID);
+//        thePanel.add(view);
+//        thePanel.add(cancel);
+//        add(thePanel);
+//        thePanel.setVisible(true);
+//        setVisible(true);
+    	String input = JOptionPane.showInputDialog("Enter student id");
+    	return input;
     }
-    
-    
-    
     
     public void displayMainFrame ( ) {
         setSize(500,500);
