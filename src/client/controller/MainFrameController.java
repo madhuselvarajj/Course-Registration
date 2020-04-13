@@ -122,7 +122,8 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                communication.sendCode(5);
+                communication.sendCode(5); 
+                //needs to also 
                 mainFrame.displayText(communication.getServerResponse());
                 
             }

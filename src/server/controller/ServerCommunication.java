@@ -91,7 +91,6 @@ public class ServerCommunication {
 	
 	private void viewAllCoursesTakenByStudent(String studentId) {
 		try {	
-			//need to parse tempID into an integer
 			Integer id = Integer.parseInt(studentId);
 			
 			//search through database for that student
