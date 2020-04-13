@@ -49,11 +49,8 @@ public class ServerCommunication {
 			try {
 				code = (Integer)in.readObject(); //reads the code
 				if(code.equals(1)) { //search for course
-					System.out.println("in here");
 					String courseName = (String)in.readObject();
-					System.out.println(courseName);
 					String courseNum = (String)in.readObject();
-					System.out.println(courseNum);
 					searchForCourse(courseName,courseNum);
 				}else if(code.equals(2)) { //add course
 					String studentId = (String)in.readObject();
@@ -70,7 +67,6 @@ public class ServerCommunication {
 				}else if(code.equals(4)) { //display catalogue
 					displayAllCourses();
 				}else if(code.equals(5)) { //display student's courses
-					System.out.println("in 5");
 					String studentId = (String)in.readObject();
 					viewAllCoursesTakenByStudent(studentId);
 				}else if(code.equals(6)) { //exit
@@ -104,9 +100,9 @@ public class ServerCommunication {
 				return;
 			}
 			if(studentObj.getRegList().size()==0)
-				out.writeObject(studentObj.getName() + " is not registered in any courses");
+				out.writeObject(studentObj.getName() + " is not registered in anything.");
 			else
-				out.writeObject(studentObj.printRegList());
+				out.writeObject(studentObj.getName() + " is registered in: \n"+studentObj.printRegList());
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -128,6 +124,7 @@ public class ServerCommunication {
 			Integer id = Integer.parseInt(studentId);
 			Integer courseNum = Integer.parseInt(cNum);
 			Integer sectionNum = Integer.parseInt(secNum);		
+			courseName = courseName.toUpperCase();
 			
 			//verify student is in the database
 			Student studentObj = findStudent(id);
@@ -172,7 +169,9 @@ public class ServerCommunication {
 		System.out.println("hi");
 		try {
 			Integer courseNum = Integer.parseInt(num);
+			name = name.toUpperCase();
 			String output = theCatalogue.searchForCourse(courseNum);
+			
 			System.out.println(output);
 			if(output == null) {
 				out.writeObject("Course was not found.");
@@ -190,6 +189,7 @@ public class ServerCommunication {
 			Integer id =Integer.parseInt(studentId);
 			Integer courseNum = Integer.parseInt(num);
 			Integer sectionNum = Integer.parseInt(secNum);
+			courseName = courseName.toUpperCase();
 			
 			//verify the student is in the database
 			Student studentObj = findStudent(id);
@@ -217,7 +217,8 @@ public class ServerCommunication {
 			Registration regObj = new Registration(dataBase.getStudentList().get(index), theOffering);
 			//add this object to both the student and the offering's regList
 			if(regObj.addRegistration()) {
-				out.writeObject("Registration complete");
+				out.writeObject("Registration complete. " + studentObj.getName() + " is enrolled in " + theCourse.getCourseName() 
+				+ " "+theCourse.getCourseNum()+" section " +sectionNum);
 			}else {
 				out.writeObject("Regstration failed. Student enrolled in max of 6 courses");
 			}

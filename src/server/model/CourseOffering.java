@@ -47,7 +47,7 @@ public class CourseOffering {
 	}
 	
 	public String toString() {
-		String s = theCourse + "\nIn section " + this.secNum + "\n";
+		String s = theCourse + "\nSection " + this.secNum + "\n";
 		return s;
 	}
 }
