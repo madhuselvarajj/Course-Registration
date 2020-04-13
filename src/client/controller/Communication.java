@@ -12,7 +12,7 @@ import client.view.MainFrame;
  *and output and communication between the client and server through
  *the use of a socket. For the purpose of this program we will be using
  *socket 1010. 
- *
+ *@author Navjot Singh, Madhu Selvaraj
  */
 public class Communication {
     /**
@@ -52,6 +52,7 @@ public class Communication {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Sends just the code to the server
 	 * @param code
@@ -64,6 +65,7 @@ public class Communication {
 			e.printStackTrace();
 		}
 	}
+	
     /**
      *this will return the response from the server when prompted/
      *@return the String object which is written into the socket by
@@ -78,6 +80,7 @@ public class Communication {
         }
         return response;
     }
+    
 	/**
 	 * Sends an object with a code to the server	
 	 * @param code tells the server what to do with the object

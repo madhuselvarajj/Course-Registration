@@ -13,6 +13,7 @@ import javax.swing.*;
  *client will be interacting with. This will be achieved through the use of a JFrame.
  *this class extends JFrame which will contain the main frame which all user interactions
  *will be based off of.
+ * @author Navjot Singh, Madhu Selvaraj
  */
 public class MainFrame extends JFrame{
     /**

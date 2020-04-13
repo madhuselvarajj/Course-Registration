@@ -6,10 +6,14 @@ import java.io.IOException;
 
 import server.model.Student; //doesn't work with client.model.Student and I think it is supposed to
 import client.view.MainFrame;
-
+/**
+ * Creates the GUI for the main frame of the application
+ * @author Navjot Singh, Madhu Selvaraj
+ *
+ */
 public class MainFrameController {
     /**
-     *the GUi frame which the actionListeners will be tracking
+     *the GUI frame which the actionListeners will be tracking
      */
     public MainFrame mainFrame;
     /**
@@ -18,7 +22,7 @@ public class MainFrameController {
     public Communication communication;
     
     /**
-     *this constructor will creare a mainFrameController object with the parameters passed
+     *this constructor will create a mainFrameController object with the parameters passed
      *set as the member variables and will additionally display the mainFrame and set all
      *actionlisteners on the GUI to be active.
      *@param m: the mainframe which this instance will have as it's mainFrame object
@@ -39,7 +43,7 @@ public class MainFrameController {
         //listener for the exit button. This sends code: 6 to the server socket
         mainFrame.exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                communication.sendCode(6); //sends just a code because there is no object to send
+                communication.sendCode(6); 
                 mainFrame.displayMessage(communication.getServerResponse());
                 mainFrame.dispose(); //closes the main frame and terminates the client
             }
@@ -86,10 +90,8 @@ public class MainFrameController {
 	                String response = (String)communication.in.readObject();
 	                mainFrame.displayMessage(response);
 				} catch (IOException | ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-//                mainFrame.displayText (communication.getServerResponse());
                
             }
         });
@@ -137,7 +139,6 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-//                communication.sendCode ("1");
             	try {
 					communication.out.writeObject(1);
 				} catch (IOException e1) {
@@ -202,12 +203,12 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(5);
-                String input = mainFrame.viewAllCourses();
+                String userInput = mainFrame.viewAllCourses();
                 try {
-                	if(input==null) {
+                	if(userInput==null) { //userInput will be null if the user presses cancel
                 		communication.out.writeObject(7);
                 	}else {
-                		communication.out.writeObject(input);
+                		communication.out.writeObject(userInput);
                 	}
 						
 				} catch (IOException e1) {
