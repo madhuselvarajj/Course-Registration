@@ -19,6 +19,15 @@ public class Communication {
 	 ObjectInputStream in; //reads objects from the server
 	
 	
+    /**
+     *this constructs a Communication object with the socket
+     *connected to the name and port number as specified, and will also
+     *intitialize the relevant input and output streams.
+     *@param name : the socket name for the serverSocket which
+     *is connected.
+     *@param portNum: the port number which the serverSocket is also *connected to
+     
+     */
 	public Communication(String name, int portNum){
 		try {
 			aSocket = new Socket(name, portNum);
@@ -42,7 +51,11 @@ public class Communication {
 			e.printStackTrace();
 		}
 	}
-    
+    /**
+     *this will return the response from the server when prompted/
+     *@return the String object which is written into the socket by
+     *the server the client is connected to. 
+     */
     public String getServerResponse () {
         String response = "";
         try {

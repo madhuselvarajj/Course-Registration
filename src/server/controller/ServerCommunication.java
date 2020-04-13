@@ -24,6 +24,12 @@ public class ServerCommunication {
 	public Student theStudent = new Student(); //later, this should be the database I think?
 	private DBController dataBase;
 	private CourseCatalogue theCatalogue;
+    
+    /**
+     *this is the default constructor which will create a new serverSocket with port num 1010.
+     *It will instantiate the input and output streams as well as the relevant sockets and
+     *let the user know when a connection has been achieved.
+     */
 	public ServerCommunication(){
 		try {
 			serverSocket = new ServerSocket(1010);
@@ -89,6 +95,10 @@ public class ServerCommunication {
 		}
 	}
 	
+    /**
+     *this function will send a String will all of a student's courses to the socket
+     *@param studentID the ID of the student who is looking to see all of their course listings.
+     */
 	private void viewAllCoursesTakenByStudent(String studentId) {
 		try {	
 			Integer id = Integer.parseInt(studentId);
@@ -108,7 +118,10 @@ public class ServerCommunication {
 		}
 		
 	}
-
+    /**
+     *this function will send a String with all of the courses available in the course catalogue
+     *to the client's socket.
+     */
 	private void displayAllCourses() {
 		try {
 			String output = theCatalogue.displayAllCourses();
@@ -118,7 +131,13 @@ public class ServerCommunication {
 			e.printStackTrace();
 		}
 	}
-
+    /**
+     *this function will remove a course from a student's course listing
+     *@param studentId : the ID of the student hoping to remove a course
+     *@param courseName : the name of the course the student would like to remove
+     *@param cNum : the number of the course the student would like to remove
+     *@param secNum : the section of the course the student is looking to remove.
+     */
 	private void removeCourse(String studentId, String courseName, String cNum, String secNum) {
 		try {
 			Integer id = Integer.parseInt(studentId);
@@ -164,7 +183,12 @@ public class ServerCommunication {
 		}
 		
 	}
-
+    /**
+     *this will write to the socket if the course with the specified name and number is available
+     *in the course offering list.
+     *@param name : the name of the course
+     *@param num: the number of the course to be searched for
+     */
 	private void searchForCourse(String name, String num) {
 		System.out.println("hi");
 		try {
@@ -183,7 +207,13 @@ public class ServerCommunication {
 		}
 		
 	}
-	
+	/**
+     *this will add a course to a student's listing with the specified parameters
+     *@param studentId : the student's ID for the student looking to do the action
+     *@param courseName : the name of the course to remove
+     *@param num : the number of the course to remove
+     *@param secNum : the section of the course to remove.
+     */
 	private void addCourse(String studentId, String courseName, String num, String secNum) {
 		try {
 			Integer id =Integer.parseInt(studentId);
@@ -230,6 +260,11 @@ public class ServerCommunication {
 		
 	}
 	
+    /**
+     *this will find the location of a student in the database
+     *@return an int with the index of the student object's location
+     *@param studentObj the student to search for
+     */
 	private int findStudentLocation(Student studentObj) {
 		int i = 0;
 		for(Student s: dataBase.getStudentList()) {
@@ -240,7 +275,13 @@ public class ServerCommunication {
 		}
 		return i;
 	}
-
+    /**
+     *this will find the courseOffering with the specified section number and course objecct
+     *and return it.
+     *@return the CourseOffering object with the specified params
+     *@param sectionNum : the section number for the specified course offering
+     *@param theCourse : the course the student is looking to find an offering for
+     */
 	private CourseOffering findOffering(Integer sectionNum, Course theCourse) {
 		CourseOffering theOffering = null;
 		for(CourseOffering o: theCourse.getOfferingList()) {
@@ -251,7 +292,12 @@ public class ServerCommunication {
 		}
 		return theOffering;
 	}
-
+    /**
+     *findCourse will return the Course object with the specified courseNum and name
+     *@param courseNum : the course number to search
+     *@param courseName : the course name to search
+     *@return a couse object with the name and number, else null if non existant.
+     */
 	private Course findCourse(Integer courseNum, String courseName) {
 		Course theCourse = null;
 		for(Course c: dataBase.getCourseList()) {
@@ -262,7 +308,11 @@ public class ServerCommunication {
 		}
 		return theCourse;
 	}
-
+    /**
+     *returns a Student object with the specified ID, else will return null if not found.
+     *@return a Student object with the specified ID (from the database)
+     *@param id : the ID of the student to search for. 
+     */
 	private Student findStudent(int id) {
 		Student studentObj = null;
 		for(Student s: dataBase.getStudentList()) {

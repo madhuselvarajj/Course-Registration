@@ -8,16 +8,33 @@ import server.model.Student; //doesn't work with client.model.Student and I thin
 import client.view.MainFrame;
 
 public class MainFrameController {
+    /**
+     *the GUi frame which the actionListeners will be tracking
+     */
     public MainFrame mainFrame;
+    /**
+     *communication will be used to communicate with the server sockets when an actionevent occurs.
+     */
     public Communication communication;
     
+    /**
+     *this constructor will creare a mainFrameController object with the parameters passed
+     *set as the member variables and will additionally display the mainFrame and set all
+     *actionlisteners on the GUI to be active.
+     *@param m: the mainframe which this instance will have as it's mainFrame object
+     *@param com: the communication object this instance will contain.
+     */
     public MainFrameController(MainFrame m, Communication com) {
         this.mainFrame = m;
         this.communication = com;
         mainFrame.setVisible(true);
         addListeners();
     }
-    
+    /**
+     *this function will add action listeners for all JButtons on the mainFrame
+     *and send information to the server socket accordingly, as well as display the
+     *response recieved from the server socket. 
+     */
     private void addListeners() {
         //listener for the exit button. This sends code: 6 to the server socket
         mainFrame.exit.addActionListener(new ActionListener() {
