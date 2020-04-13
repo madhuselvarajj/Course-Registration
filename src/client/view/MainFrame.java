@@ -1,5 +1,3 @@
-package client.view;
-
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,7 +16,23 @@ public class MainFrame extends JFrame{
     public JButton exit = new JButton("exit");
     public JTextField courseName = new JTextField ("enter course name");
     public JTextField courseNum = new JTextField ("enter course number");
+    public JTextField section = new JTextField ("enter section number");
+    public JTextField studentID = new JTextField ("enter the student ID");
+    /**
+     * Search is the JButton which will be used when a student is searching
+     * for a particular course in the course catalogue
+     */
+    public JButton Search = new JButton ("Search");
+    /**
+     * OK is the JButton which will be used when a student is trying to add
+     * or remove a course (will also require the student to enter their ID).
+     */
     public JButton OK = new JButton ("OK");
+    /**
+     * view is the JButton which will be used when a student is trying to view
+     * all of the courses they are currently taking.
+     */
+    public JButton view = new JButton ("View");
     public JButton cancel = new JButton ("cancel");
     
     public MainFrame() {
@@ -28,14 +42,37 @@ public class MainFrame extends JFrame{
     
     //need a class Course that is serializable for the following options:
     //searchCat, add course, find course, view offerings, remove course, possible view registration?
-    public void askForCourseInfo() {
+    public void searchForCourse() {
         JPanel coursePrompt = new JPanel();
         coursePrompt.add(courseName);
         coursePrompt.add(courseNum);
-        coursePrompt.add(OK);
+        coursePrompt.add(Search);
         coursePrompt.add(cancel);
         add(coursePrompt);
         coursePrompt.setVisible(true);
+        setVisible(true);
+    }
+    
+    public void addOrRemoveCourse() {
+        JPanel addOrRem = new JPanel();
+        addOrRem.add(courseName);
+        addOrRem.add(courseNum);
+        addOrRem.add(section);
+        addOrRem.add(studentID);
+        addOrRem.add(OK);
+        addOrRem.add(cancel);
+        add(addOrRem);
+        addOrRem.setVisible(true);
+        setVisible(true);
+    }
+    
+    public void viewAllCourses () {
+        JPanel viewAll = new JPanel();
+        viewAll.add(studentID);
+        viewAll.add(view);
+        viewAll.add(cancel);
+        add(viewAll);
+        viewAll.setVisible(true);
         setVisible(true);
     }
     
