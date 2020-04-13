@@ -51,60 +51,65 @@ public class ServerCommunication {
 	 */
 	public void communicateWithClient() {
 		Integer code = 0;
-		Object isCancelled = null;
+//		Object isCancelled = null;
 		while(true) {
 			try {
+				Object isCancelled = null;
 				code = (Integer)in.readObject(); //reads the code
-				
-				if(code!=4 && code!=6) { //if code == 4 or 6, then user did not have the option to press cancel
-					isCancelled = in.readObject(); //read the next entry in the socket...might be 7 if user cancelled, or might be user input
-				}
-				
-				if(code==4){ //display entire catalog
-					displayAllCourses();
-				}
-				else if(code == 6) { //terminate 
-					out.writeObject("Bye");
-					break;
-				}
-				else { //if code is 1,2,3,5 ...that means isCancelled contains the next value in the socket
-					
-					//if isCancelled is an integer and if isCancelled == 7, that means the user canceled
-					if (isCancelled instanceof Integer && (Integer)isCancelled == 7) { 
-							out.writeObject("Cancelled");
-					}else {
-						//if isCanceled is not an integer, or if isCancelled is != 7...that means that user entered in input and did not cancel
-						//so store isCancelled as the next input and continue normally 
-						String nextInput = (String)isCancelled;
-						
-						if(code.equals(1)) { //search for course
-							String courseName = nextInput;
-							String courseNum = (String)in.readObject();
-							searchForCourse(courseName,courseNum);
-						}
-						else if(code.equals(2)) { //add course
-							String studentId = nextInput;
-							String courseName = (String)in.readObject();
-							String courseNum = (String)in.readObject();
-							String sectionNum = (String)in.readObject();
-							addCourse(studentId,courseName,courseNum,sectionNum);
-						}
-						else if(code.equals(3)) { //remove course
-							String studentId = nextInput;
-							String courseName = (String)in.readObject();
-							String courseNum = (String)in.readObject();
-							String sectionNum = (String)in.readObject();
-							removeCourse(studentId,courseName,courseNum,sectionNum);
-						}
-						else if(code.equals(5)) { //display student's courses
-							String studentId = nextInput;
-							viewAllCoursesTakenByStudent(studentId);
-						}
-						else {
-		                    out.writeObject("Error. Program terminating.");
-		                    break;
-		                }
+				System.out.println("code: "+code);
+				if(code == 7) { //need this here if cancel is pressed after ok was already pressed 
+					out.writeObject("cancelled");
+				}else {
+					if(code!=4 && code!=6) { //if code == 4 or 6, then user did not have the option to press cancel
+						isCancelled = in.readObject(); //read the next entry in the socket...might be 7 if user cancelled, or might be user input
 					}
+					System.out.println("isCancelle: "+isCancelled);
+					if(code==4){ //display entire catalog
+						displayAllCourses();
+					}
+					else if(code == 6) { //terminate 
+						out.writeObject("Bye");
+						break;
+					}
+					else { //if code is 1,2,3,5 ...that means isCancelled contains the next value in the socket
+						
+						//if isCancelled is an integer and if isCancelled == 7, that means the user canceled
+						if (isCancelled instanceof Integer && (Integer)isCancelled == 7) { 
+								out.writeObject("Cancelled");
+						}else {
+							//if isCanceled is not an integer, or if isCancelled is != 7...that means that user entered in input and did not cancel
+							//so store isCancelled as the next input and continue normally 
+							String nextInput = (String)isCancelled;
+							
+							if(code.equals(1)) { //search for course
+								String courseName = nextInput;
+								String courseNum = (String)in.readObject();
+								searchForCourse(courseName,courseNum);
+							}
+							else if(code.equals(2)) { //add course
+								String studentId = nextInput;
+								String courseName = (String)in.readObject();
+								String courseNum = (String)in.readObject();
+								String sectionNum = (String)in.readObject();
+								addCourse(studentId,courseName,courseNum,sectionNum);
+							}
+							else if(code.equals(3)) { //remove course
+								String studentId = nextInput;
+								String courseName = (String)in.readObject();
+								String courseNum = (String)in.readObject();
+								String sectionNum = (String)in.readObject();
+								removeCourse(studentId,courseName,courseNum,sectionNum);
+							}
+							else if(code.equals(5)) { //display student's courses
+								String studentId = nextInput;
+								viewAllCoursesTakenByStudent(studentId);
+							}
+							else {
+			                    out.writeObject("Error. Program terminating.");
+			                    break;
+			                }
+						}
+					}//end
 				}
 				
 			} catch (ClassNotFoundException | IOException e) {
@@ -357,5 +362,3 @@ public class ServerCommunication {
 		sv.communicateWithClient();
 	}
 }
-
-

@@ -120,6 +120,7 @@ public class MainFrame extends JFrame{
      */
     public String viewAllCourses () {
         String input = JOptionPane.showInputDialog("Enter student id");
+        System.out.println(input);
         return input;
     }
     /**

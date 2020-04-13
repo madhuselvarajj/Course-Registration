@@ -115,12 +115,13 @@ public class MainFrameController {
         
 //        anonymous listener class for the "cancel" button
         mainFrame.cancel.addActionListener(new ActionListener ( ) {
-            
+           
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
+            		System.out.println("pressed cancel");
 					communication.out.writeObject(7);
-            		communication.in.readObject(); //read from socket but don't do anything with it
+            		communication.in.readObject();
 				} catch (ClassNotFoundException | IOException e1) {
 					e1.printStackTrace();
 				}
