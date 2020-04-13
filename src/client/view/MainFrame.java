@@ -19,7 +19,7 @@ public class MainFrame extends JFrame{
     /**
      *searchCat is used to search for a course in the course catalogue
      */
-    public JButton searchCat = new JButton("search catalogue courses");
+    public JButton searchCat = new JButton("Search catalogue courses");
     /**
      *addCourse is used when a student wants to add a course to their current course listing
      */
@@ -35,7 +35,7 @@ public class MainFrame extends JFrame{
     /**
      *viewAllStud is used to view all courses that one particular student is taking
      */
-    public JButton viewAllStud = new JButton ("view all courses taken by student");
+    public JButton viewAllStud = new JButton ("View all courses taken by student");
     /**
      *exit is used when a student would like to exit the main menu and terminate the program
      */
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame{
      *when a student chooses an option from the main menu but would like to return to the
      *main menu, they will hit cancel.
      */
-    public JButton cancel = new JButton ("cancel");
+    public JButton cancel = new JButton ("Cancel/Return");
     /**
      *this is the only JPanel used in the JFrame (continually flushed in functions).
      */
@@ -85,7 +85,7 @@ public class MainFrame extends JFrame{
      *to choose from a menu item.
      */
     public MainFrame() {
-        super ("main menu:");
+        super ("Main Menu");
         displayMainFrame();
     }
     
