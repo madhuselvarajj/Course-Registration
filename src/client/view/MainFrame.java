@@ -8,7 +8,12 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.*;
-
+/**
+ *class mainFrame is the class that will handle the graphic user interface which the
+ *client will be interacting with. This will be achieved through the use of a JFrame.
+ *this class extends JFrame which will contain the main frame which all user interactions
+ *will be based off of.
+ */
 public class MainFrame extends JFrame{
     /**
      *searchCat is used to search for a course in the course catalogue
@@ -173,17 +178,6 @@ public class MainFrame extends JFrame{
         setVisible(true);
     }
     
-    public void displayText (String str) {
-        remove(thePanel);
-        thePanel = new JPanel();
-        JTextArea textArea = new JTextArea(400,400);
-        thePanel.add(textArea, BorderLayout.CENTER);
-        JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        thePanel.add(scroll);
-        textArea.setText(str);
-        thePanel.setVisible(true);
-        setVisible(true);
-    }
     /**
      *displayMessage is used to show the String passed as a GUI component (a message on a
      *JOptionPane).

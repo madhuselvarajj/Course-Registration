@@ -8,14 +8,27 @@ import java.net.UnknownHostException;
 import client.view.MainFrame;
 
 /**
- * Communicates with Server 
+ * Communicates with Server. This class will handle all socket input
+ *and output and communication between the client and server through
+ *the use of a socket. For the purpose of this program we will be using
+ *socket 1010. 
  *
  */
 public class Communication {
-	 Socket aSocket; //the socket
-	
+    /**
+     *This is the main socket that the client will be using to communicate
+     *with the server.
+     */
+	 Socket aSocket;
+	/**
+     *This is the output stream which will be used to write objects
+     *to the server using the socket
+     */
 	 ObjectOutputStream out; //writes objects to the server 
-	
+	/**
+     *This is the input stream which will be used to read objects from the
+     *server that were written into the socket.
+     */
 	 ObjectInputStream in; //reads objects from the server
 	
 	
