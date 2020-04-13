@@ -118,6 +118,12 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
+            	try {
+					communication.out.writeObject(7);
+            		communication.in.readObject(); //read from socket but don't do anything with it
+				} catch (ClassNotFoundException | IOException e1) {
+					e1.printStackTrace();
+				}
                 mainFrame.displayMainFrame();
             }
             
@@ -197,7 +203,12 @@ public class MainFrameController {
                 communication.sendCode(5);
                 String input = mainFrame.viewAllCourses();
                 try {
-					communication.out.writeObject(input);
+                	if(input==null) {
+                		communication.out.writeObject(7);
+                	}else {
+                		communication.out.writeObject(input);
+                	}
+						
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

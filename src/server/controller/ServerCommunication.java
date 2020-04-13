@@ -21,7 +21,7 @@ public class ServerCommunication {
 	private ServerSocket serverSocket;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	public Student theStudent = new Student(); //later, this should be the database I think?
+	public Student theStudent = new Student(); 
 	private DBController dataBase;
 	private CourseCatalogue theCatalogue;
     
@@ -51,37 +51,62 @@ public class ServerCommunication {
 	 */
 	public void communicateWithClient() {
 		Integer code = 0;
+		Object isCancelled = null;
 		while(true) {
 			try {
 				code = (Integer)in.readObject(); //reads the code
-				if(code.equals(1)) { //search for course
-					String courseName = (String)in.readObject();
-					String courseNum = (String)in.readObject();
-					searchForCourse(courseName,courseNum);
-				}else if(code.equals(2)) { //add course
-					String studentId = (String)in.readObject();
-					String courseName = (String)in.readObject();
-					String courseNum = (String)in.readObject();
-					String sectionNum = (String)in.readObject();
-					addCourse(studentId,courseName,courseNum,sectionNum);
-				}else if(code.equals(3)) { //remove course
-					String studentId = (String)in.readObject();
-					String courseName = (String)in.readObject();
-					String courseNum = (String)in.readObject();
-					String sectionNum = (String)in.readObject();
-					removeCourse(studentId,courseName,courseNum,sectionNum);
-				}else if(code.equals(4)) { //display catalogue
+				
+				if(code!=4 && code!=6) { //if code == 4 or 6, then user did not have the option to press cancel
+					isCancelled = in.readObject(); //read the next entry in the socket...might be 7 if user cancelled, or might be user input
+				}
+				
+				if(code==4){ //display entire catalog
 					displayAllCourses();
-				}else if(code.equals(5)) { //display student's courses
-					String studentId = (String)in.readObject();
-					viewAllCoursesTakenByStudent(studentId);
-				}else if(code.equals(6)) { //exit
+				}
+				else if(code == 6) { //terminate 
 					out.writeObject("Bye");
 					break;
-				}else {
-                    out.writeObject("Error. Program terminating.");
-                    break;
-                }
+				}
+				else { //if code is 1,2,3,5 ...that means isCancelled contains the next value in the socket
+					
+					//if isCancelled is an integer and if isCancelled == 7, that means the user canceled
+					if (isCancelled instanceof Integer && (Integer)isCancelled == 7) { 
+							out.writeObject("Cancelled");
+					}else {
+						//if isCanceled is not an integer, or if isCancelled is != 7...that means that user entered in input and did not cancel
+						//so store isCancelled as the next input and continue normally 
+						String nextInput = (String)isCancelled;
+						
+						if(code.equals(1)) { //search for course
+							String courseName = nextInput;
+							String courseNum = (String)in.readObject();
+							searchForCourse(courseName,courseNum);
+						}
+						else if(code.equals(2)) { //add course
+							String studentId = nextInput;
+							String courseName = (String)in.readObject();
+							String courseNum = (String)in.readObject();
+							String sectionNum = (String)in.readObject();
+							addCourse(studentId,courseName,courseNum,sectionNum);
+						}
+						else if(code.equals(3)) { //remove course
+							String studentId = nextInput;
+							String courseName = (String)in.readObject();
+							String courseNum = (String)in.readObject();
+							String sectionNum = (String)in.readObject();
+							removeCourse(studentId,courseName,courseNum,sectionNum);
+						}
+						else if(code.equals(5)) { //display student's courses
+							String studentId = nextInput;
+							viewAllCoursesTakenByStudent(studentId);
+						}
+						else {
+		                    out.writeObject("Error. Program terminating.");
+		                    break;
+		                }
+					}
+				}
+				
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
@@ -296,7 +321,7 @@ public class ServerCommunication {
      *findCourse will return the Course object with the specified courseNum and name
      *@param courseNum : the course number to search
      *@param courseName : the course name to search
-     *@return a couse object with the name and number, else null if non existant.
+     *@return a course object with the name and number, else null if non existent.
      */
 	private Course findCourse(Integer courseNum, String courseName) {
 		Course theCourse = null;

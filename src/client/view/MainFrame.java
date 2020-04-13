@@ -119,14 +119,6 @@ public class MainFrame extends JFrame{
      *currently enrolled in.
      */
     public String viewAllCourses () {
-        //        remove(thePanel);
-        //        thePanel = new JPanel();
-        //        thePanel.add(studentID);
-        //        thePanel.add(view);
-        //        thePanel.add(cancel);
-        //        add(thePanel);
-        //        thePanel.setVisible(true);
-        //        setVisible(true);
         String input = JOptionPane.showInputDialog("Enter student id");
         return input;
     }
