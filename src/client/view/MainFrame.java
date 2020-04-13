@@ -1,3 +1,5 @@
+package client.view;
+
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -128,7 +130,7 @@ public class MainFrame extends JFrame{
     }
     
     public void displayText (String str) {
-        remove (thePanel);
+        remove(thePanel);
         thePanel = new JPanel();
         JTextArea textArea = new JTextArea(400,400);
         thePanel.add(textArea, BorderLayout.CENTER);
@@ -138,6 +140,10 @@ public class MainFrame extends JFrame{
         thePanel.setVisible(true);
         setVisible(true);
     }
+
+	public void displayMessage(String response) {
+		JOptionPane.showMessageDialog(this, response);
+	}
     
     
     

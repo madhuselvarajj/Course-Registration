@@ -49,8 +49,11 @@ public class ServerCommunication {
 			try {
 				code = (String)in.readObject(); //reads the code
 				if(code.equals("1")) { //search for course
+					System.out.println("in here");
 					String courseName = (String)in.readObject();
+					System.out.println(courseName);
 					String courseNum = (String)in.readObject();
+					System.out.println(courseNum);
 					searchForCourse(courseName,courseNum);
 				}else if(code.equals("2")) { //add course
 					String studentId = (String)in.readObject();
@@ -161,9 +164,11 @@ public class ServerCommunication {
 	}
 
 	private void searchForCourse(String name, String num) {
+		System.out.println("hi");
 		try {
 			Integer courseNum = Integer.parseInt(num);
 			String output = theCatalogue.searchForCourse(courseNum);
+			System.out.println(output);
 			if(output == null) {
 				out.writeObject("Course was not found.");
 			}else {

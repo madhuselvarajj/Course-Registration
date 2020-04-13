@@ -42,11 +42,14 @@ public class MainFrameController {
                 try {
 					communication.out.writeObject(mainFrame.courseName.getText());
 					communication.out.writeObject(mainFrame.courseNum.getText());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					String response = (String)communication.in.readObject();
+					System.out.println(response);
+//		            mainFrame.displayText(response);
+					mainFrame.displayMessage(response);
+				} catch (IOException | ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
-                mainFrame.displayText (communication.getServerResponse());
+//                mainFrame.displayText (communication.getServerResponse());
                 
             }
             
@@ -63,11 +66,14 @@ public class MainFrameController {
 	                communication.out.writeObject(mainFrame.courseName.getText());
 	                communication.out.writeObject(mainFrame.courseNum.getText());
 	                communication.out.writeObject(mainFrame.section.getText());
-				} catch (IOException e1) {
+	                String response = (String)communication.in.readObject();
+	                mainFrame.displayText(response);
+				} catch (IOException | ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-                mainFrame.displayText (communication.getServerResponse());
+//                mainFrame.displayText (communication.getServerResponse());
+               
             }
         });
         
@@ -108,7 +114,12 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                communication.sendCode (1);
+//                communication.sendCode ("1");
+            	try {
+					communication.out.writeObject("1");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
                 mainFrame.searchForCourse();
                 //we send the code and then OK's actionListener in askForCourseInfo() will
                 //automatically send the nessecary info to the server socket and display the
