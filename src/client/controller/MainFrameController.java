@@ -23,7 +23,7 @@ public class MainFrameController {
         mainFrame.exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(6); //sends just a code because there is no object to send
-                mainFrame.displayText(communication.getServerResponse());
+                mainFrame.displayMessage(communication.getServerResponse());
                 mainFrame.dispose(); //closes the main frame and terminates the client
             }
             
@@ -67,7 +67,7 @@ public class MainFrameController {
 	                communication.out.writeObject(mainFrame.courseNum.getText());
 	                communication.out.writeObject(mainFrame.section.getText());
 	                String response = (String)communication.in.readObject();
-	                mainFrame.displayText(response);
+	                mainFrame.displayMessage(response);
 				} catch (IOException | ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -90,7 +90,7 @@ public class MainFrameController {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-                mainFrame.displayText (communication.getServerResponse());
+                mainFrame.displayMessage (communication.getServerResponse());
             }
             
         });
@@ -166,7 +166,7 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(4);
-                mainFrame.displayText(communication.getServerResponse());
+                mainFrame.displayMessage(communication.getServerResponse());
                 
             }
             
@@ -181,7 +181,7 @@ public class MainFrameController {
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(5);
                 mainFrame.viewAllCourses();
-                mainFrame.displayText(communication.getServerResponse());
+                mainFrame.displayMessage(communication.getServerResponse());
                 
             }
             

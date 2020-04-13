@@ -44,35 +44,35 @@ public class ServerCommunication {
 	 * First reads the code, then depending on the code it will call another method or exit
 	 */
 	public void communicateWithClient() {
-		String code = "";
+		int code = 0;
 		while(true) {
 			try {
-				code = (String)in.readObject(); //reads the code
-				if(code.equals("1")) { //search for course
+				code = (Integer)in.readObject(); //reads the code
+				if(code.equals(1)) { //search for course
 					System.out.println("in here");
 					String courseName = (String)in.readObject();
 					System.out.println(courseName);
 					String courseNum = (String)in.readObject();
 					System.out.println(courseNum);
 					searchForCourse(courseName,courseNum);
-				}else if(code.equals("2")) { //add course
+				}else if(code.equals(2)) { //add course
 					String studentId = (String)in.readObject();
 					String courseName = (String)in.readObject();
 					String courseNum = (String)in.readObject();
 					String sectionNum = (String)in.readObject();
 					addCourse(studentId,courseName,courseNum,sectionNum);
-				}else if(code.equals("3")) { //remove course
+				}else if(code.equals(3)) { //remove course
 					String studentId = (String)in.readObject();
 					String courseName = (String)in.readObject();
 					String courseNum = (String)in.readObject();
 					String sectionNum = (String)in.readObject();
 					removeCourse(studentId,courseName,courseNum,sectionNum);
-				}else if(code.equals("4")) { //display catalogue
+				}else if(code.equals(4)) { //display catalogue
 					displayAllCourses();
-				}else if(code.equals("5")) { //display student's courses
+				}else if(code.equals(5)) { //display student's courses
 					String studentId = (String)in.readObject();
 					viewAllCoursesTakenByStudent(studentId);
-				}else if(code.equals("6")) { //exit
+				}else if(code.equals(6)) { //exit
 					out.writeObject("Bye");
 					break;
 				}else {
