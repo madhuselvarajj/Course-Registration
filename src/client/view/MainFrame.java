@@ -1,4 +1,4 @@
-package client.view;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -34,6 +34,7 @@ public class MainFrame extends JFrame{
      */
     public JButton view = new JButton ("View");
     public JButton cancel = new JButton ("cancel");
+    public JPanel thePanel = new JPanel();
     
     public MainFrame() {
         super ("main menu:");
@@ -43,36 +44,39 @@ public class MainFrame extends JFrame{
     //need a class Course that is serializable for the following options:
     //searchCat, add course, find course, view offerings, remove course, possible view registration?
     public void searchForCourse() {
-        JPanel coursePrompt = new JPanel();
-        coursePrompt.add(courseName);
-        coursePrompt.add(courseNum);
-        coursePrompt.add(Search);
-        coursePrompt.add(cancel);
-        add(coursePrompt);
-        coursePrompt.setVisible(true);
+        remove(thePanel);
+        thePanel = new JPanel();
+        thePanel.add(courseName);
+        thePanel.add(courseNum);
+        thePanel.add(Search);
+        thePanel.add(cancel);
+        add(thePanel);
+        thePanel.setVisible(true);
         setVisible(true);
     }
     
     public void addOrRemoveCourse() {
-        JPanel addOrRem = new JPanel();
-        addOrRem.add(courseName);
-        addOrRem.add(courseNum);
-        addOrRem.add(section);
-        addOrRem.add(studentID);
-        addOrRem.add(OK);
-        addOrRem.add(cancel);
-        add(addOrRem);
-        addOrRem.setVisible(true);
+        remove(thePanel);
+        thePanel = new JPanel();
+        thePanel.add(courseName);
+        thePanel.add(courseNum);
+        thePanel.add(section);
+        thePanel.add(studentID);
+        thePanel.add(OK);
+        thePanel.add(cancel);
+        add(thePanel);
+        thePanel.setVisible(true);
         setVisible(true);
     }
     
     public void viewAllCourses () {
-        JPanel viewAll = new JPanel();
-        viewAll.add(studentID);
-        viewAll.add(view);
-        viewAll.add(cancel);
-        add(viewAll);
-        viewAll.setVisible(true);
+        remove(thePanel);
+        thePanel = new JPanel();
+        thePanel.add(studentID);
+        thePanel.add(view);
+        thePanel.add(cancel);
+        add(thePanel);
+        thePanel.setVisible(true);
         setVisible(true);
     }
     
@@ -99,36 +103,42 @@ public class MainFrame extends JFrame{
         
         
         //add the buttons for the main menu items to the main panel
-        JPanel p = new JPanel();
-        p.add(mainLabel);
-        p.add(viewAllStud);
-        p.add((viewAllCat));
-        p.add(removeCourse);
-        p.add(addCourse);
-        p.add(searchCat);
-        p.add(exit);
+        thePanel = new JPanel();
+        thePanel.add(mainLabel);
+        thePanel.add(viewAllStud);
+        thePanel.add((viewAllCat));
+        thePanel.add(removeCourse);
+        thePanel.add(addCourse);
+        thePanel.add(searchCat);
+        thePanel.add(exit);
+        
+        removeCourse.addActionListener (new ActionListener ()  {
+            @Override
+            public void actionPerformed (ActionEvent e) {
+                addOrRemoveCourse();
+            }
+            
+        });
         
         
         //add the panel to the frame
-        add(p);
-        p.setVisible(true);
+        add(thePanel);
+        thePanel.setVisible(true);
         setVisible(true);
     }
     
     public void displayText (String str) {
-        JPanel textPanel = new JPanel();
+        remove (thePanel);
+        thePanel = new JPanel();
         JTextArea textArea = new JTextArea(400,400);
-        textPanel.add(textArea, BorderLayout.CENTER);
+        thePanel.add(textArea, BorderLayout.CENTER);
         JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        textPanel.add(scroll);
+        thePanel.add(scroll);
         textArea.setText(str);
-        textPanel.setVisible(true);
+        thePanel.setVisible(true);
         setVisible(true);
     }
     
-    public static void main (String [] args) {
-        MainFrame theFrame = new MainFrame();
-    }
     
     
 }
