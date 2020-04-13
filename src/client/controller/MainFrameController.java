@@ -28,8 +28,9 @@ public class MainFrameController {
             
         });
         
-        //anonymous listener class for the "OK" button
-        mainFrame.OK.addActionListener(new ActionListener ()  {
+        //anonymous listener class for the "Search" button
+        //this is used when a student searches for a class
+        mainFrame.Search.addActionListener(new ActionListener ()  {
             
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -44,6 +45,34 @@ public class MainFrameController {
             }
             
         });
+        //anonymous listener class for the "OK" button
+        //this is used when a student would like to add or remove a course
+        mainFrame.OK.addActionListener (new ActionListener () {
+            
+            @Override
+            public void actionPerformed (ActionEvent e) {
+                communication.out.writeObject(mainFrame.studentID.getText());
+                communication.out.writeObject(mainFrame.courseName.getText());
+                communication.out.writeObject(mainFrame.courseNum.getText());
+                communication.out.writeObject(mainFrame.section.getText());
+                mainFrame.displayText (communication.getServerResponse());
+            }
+        });
+        
+        /** anonymous listener class for the "view" button. This is used when a student
+         *would like to view all of the courses that they are currently enrolled in.
+         */
+        mainFrame.view.addActionListener (new ActionListener () {
+            
+            @Override
+            public void actionPerformed (ActionEvent e) {
+                communication.out.writeObject(mainFrame.studentID.getText());
+                mainFrame.displayText (communication.getServerResponse());
+            }
+            
+        });
+        
+        
         
         //anonymous listener class for the "cancel" button
         mainFrame.cancel.addActionListener(new ActionListener ( ) {
@@ -63,7 +92,7 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode (1);
-                mainFrame.askForCourseInfo();
+                mainFrame.searchForCourse();
                 //we send the code and then OK's actionListener in askForCourseInfo() will
                 //automatically send the nessecary info to the server socket and display the
                 //response on the GUI.
@@ -80,7 +109,7 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode (2);
-                mainFrame.askForCourseInfo(); 
+                mainFrame.addOrRemoveCourse();
                 //might have to call another method that allows user to also enter their id and the section number they want to add
                 
             }
@@ -95,7 +124,7 @@ public class MainFrameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode (3);
-                mainFrame.askForCourseInfo();
+                mainFrame.addOrRemoveCourse();
                 
             }
             
@@ -122,14 +151,13 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                communication.sendCode(5); 
-                //needs to also 
+                communication.sendCode(5);
+                mainFrame.viewAllCourses();
                 mainFrame.displayText(communication.getServerResponse());
                 
             }
             
         });
-        
         
     }
 }
