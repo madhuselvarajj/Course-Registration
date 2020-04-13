@@ -20,7 +20,7 @@ public class CourseCatalogue {
 	public String displayAllCourses() {
 		String s = "";
 		for(Course c: courseList)
-			s +=c.getCourseName() + " " +c.getCourseNum() + "\n";
+			s +=c +"\n";
 		
 		return s;
 	}

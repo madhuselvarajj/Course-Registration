@@ -116,8 +116,47 @@ public class ServerCommunication {
 		}
 	}
 
-	private void removeCourse(String studentId, String courseName, String courseNum, String sectionNum) {
-		//still need to do
+	private void removeCourse(String studentId, String courseName, String cNum, String secNum) {
+		try {
+			Integer id = Integer.parseInt(studentId);
+			Integer courseNum = Integer.parseInt(cNum);
+			Integer sectionNum = Integer.parseInt(secNum);		
+			
+			Student studentObj = findStudent(id);
+			if(studentObj == null) {
+				out.writeObject("Id not valid");
+				return;
+			}
+			
+			Course theCourse = findCourse(courseNum, courseName);
+			if(theCourse == null) {
+				out.writeObject("Course does not exist");
+				return;
+			}
+			
+			CourseOffering theOffering = findOffering(sectionNum, theCourse);
+			if(theOffering == null) {
+				out.writeObject("Offering does not exist");
+				return;
+			}
+			
+			Registration regObj = null;
+			for(Registration r: theOffering.getRegList()) {
+				if(r.getStudent() == studentObj && r.getOffering() == theOffering) {
+					regObj = r;
+					break;
+				}
+			}
+			if(regObj == null) {
+				out.writeObject("Registration does not exist.");
+				return;
+			}
+			regObj.removeRegistration();
+			out.writeObject("Course was successfully removed");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -210,17 +249,6 @@ public class ServerCommunication {
 		
 	}
 	
-
-	private void addObject(Object temp) {
-		try {
-			Student newStudent = (Student)temp;
-			theStudent.allStudents.add(newStudent); //later will add to the database
-			String response = newStudent.name + " was added. Number of students is now: " + theStudent.allStudents.size();
-			out.writeObject(response);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static void main (String [] args) {
 		ServerCommunication sv = new ServerCommunication();

@@ -1,5 +1,4 @@
 package server.model;
-
 import java.util.ArrayList;
 
 public class CourseOffering {
@@ -48,7 +47,7 @@ public class CourseOffering {
 	}
 	
 	public String toString() {
-		String s = theCourse + ": In section " + this.secNum;
+		String s = theCourse + "\nIn section " + this.secNum + "\n";
 		return s;
 	}
 }

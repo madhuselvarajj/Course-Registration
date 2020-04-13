@@ -2,6 +2,7 @@ package client.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import server.model.Student; //doesn't work with client.model.Student and I think it is supposed to
 import client.view.MainFrame;
@@ -22,7 +23,7 @@ public class MainFrameController {
         mainFrame.exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(6); //sends just a code because there is no object to send
-                mainFrame.displayText (communication.getServerResponse);
+                mainFrame.displayText(communication.getServerResponse());
                 mainFrame.dispose(); //closes the main frame and terminates the client
             }
             
@@ -38,8 +39,13 @@ public class MainFrameController {
                 //since the codes will be sent out first, for each of these performed it will
                 //automatically display the response on the GUI depending on what button
                 //was pressed prior to pressing the OK (ex delete vs add course)
-                communication.out.writeObject(mainFrame.courseName.getText());
-                communication.out.writeObject(mainFrame.courseNum.getText());
+                try {
+					communication.out.writeObject(mainFrame.courseName.getText());
+					communication.out.writeObject(mainFrame.courseNum.getText());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 mainFrame.displayText (communication.getServerResponse());
                 
             }
@@ -51,10 +57,16 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed (ActionEvent e) {
-                communication.out.writeObject(mainFrame.studentID.getText());
-                communication.out.writeObject(mainFrame.courseName.getText());
-                communication.out.writeObject(mainFrame.courseNum.getText());
-                communication.out.writeObject(mainFrame.section.getText());
+            
+                try {
+					communication.out.writeObject(mainFrame.studentID.getText());
+	                communication.out.writeObject(mainFrame.courseName.getText());
+	                communication.out.writeObject(mainFrame.courseNum.getText());
+	                communication.out.writeObject(mainFrame.section.getText());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 mainFrame.displayText (communication.getServerResponse());
             }
         });
@@ -66,7 +78,12 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed (ActionEvent e) {
-                communication.out.writeObject(mainFrame.studentID.getText());
+                try {
+					communication.out.writeObject(mainFrame.studentID.getText());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 mainFrame.displayText (communication.getServerResponse());
             }
             
