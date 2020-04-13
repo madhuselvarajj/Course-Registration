@@ -19,10 +19,10 @@ public class MainFrameController {
     
     private void addListeners() {
         //listener for the exit button. This sends code: 6 to the server socket
-        mainFrame.addExitListener(new ActionListener() {
+        mainFrame.exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String response = (String)communication.sendCode(6); //sends just a code because there is no object to send
-                System.out.println(response); //prints the response of the server
+                communication.sendCode(6); //sends just a code because there is no object to send
+                mainFrame.displayText (communication.getServerResponse);
                 mainFrame.dispose(); //closes the main frame and terminates the client
             }
             
