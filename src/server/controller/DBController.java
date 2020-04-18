@@ -14,7 +14,7 @@ import server.model.*;
  * Represents the database of the program. Stores all of the courses that are available to register in. Also stores the list of students. 
  * @author Madhu Selvaraj, Navjot Singh
  * 
- * should ideally have 2 databases? For courses and students.
+ * should ideally have 2 tabled? For courses and students -- only student table present now.
  *
  */
 public class DBController {
@@ -33,7 +33,7 @@ public class DBController {
 			Class.forName(driver);
 			//using localHost here
 			String url = "jdbc:oracle:thin:@root:3306/courseReg";
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", credentialStore.getUSER(), credentialStore.PASS);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", credentialStore.USER, credentialStore.PASS);
 			System.out.println("connection accepted");
 			theStatement = conn.createStatement();
 			//rs is what we will use to communicate queries.
@@ -43,7 +43,9 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+     * just for testing purposes, will be fixed to take in proper args and select/return the student
+     */
 	public void selectStudent () {
 		try{
 			String query= "SELECT * FROM students where name= ? and ID =? and grade=?";
@@ -59,14 +61,14 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
-	
-	public void addStudent () {
+    
+	public void addStudent (String name, int ID, String grade) {
 		String query = "INSERT INTO Students (name, ID, grade) values (?,?,?)";
 		try {
 			PreparedStatement pStat= conn.prepareStatement(query);
-			pStat.setString (1, "Bob");
-			pStat.setInt (2, 10);
-			pStat.setString(3, "B");
+			pStat.setString (1, name);
+			pStat.setInt (2, ID);
+			pStat.setString(3, grade);
 			int theRow = pStat.executeUpdate();
 			//theRow is an integer which contains the row that the student you are looking for is 
 			//contained within
@@ -77,7 +79,20 @@ public class DBController {
 		}
 		
 	}
-	
+    /**
+     *creates a student table if it does not already exists, no changes made if the table exists.
+     */
+    public void createStudentTable () {
+        try {
+            startConnection();
+            String query = "CREATE TABLE IF NOT EXISTS Student (name varchar(300), id int, grade varchar(1), PRIMARY KEY(id)";
+            PreparedStatement pStat = conn.prepareStatement(query);
+            //execute the prepared statement query
+            pStat.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
