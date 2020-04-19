@@ -14,7 +14,19 @@ import server.model.*;
  * Represents the database of the program. Stores all of the courses that are available to register in. Also stores the list of students. 
  * @author Madhu Selvaraj, Navjot Singh
  * 
- * should ideally have 2 tabled? For courses and students -- only student table present now.
+ * should ideally have 3 tables? 
+*course will contain all of the courses offered  - therefore it has a composite key
+*composed of the courseNumber.
+*
+* courseOffering will contain the sections for the course - therefore it has a composite keu
+* composed of courseName and section
+* 
+* 
+*student will contain all of the students and their information
+*
+*admin table will have a list of studentID and courseID's which are linked (meaning that student is taking
+*that course)- note that course-student will therefore have 2 primary keys (studentID and courseID) called a
+*composite key. 
  *
  */
 public class DBController {
@@ -43,59 +55,164 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
-	/**
-     * just for testing purposes, will be fixed to take in proper args and select/return the student
-     */
-	public void selectStudent () {
-		try{
-			String query= "SELECT * FROM students where name= ? and ID =? and grade=?";
-			PreparedStatement pStat= conn.prepareStatement(query);
-			pStat.setString(1, "Bob"); //bob should be in index 1 
-			pStat.setString(2, "Dave"); //Dave should be in index 2
-			rs= pStat.executeQuery(); //the result statement is when we execute the above query for student DB
-			while(rs.next()) {
-				System.out.println(rs.getString("name") + " "+ rs.getString("ID"));
-			}
-		pStat.close();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
+
     
-	public void addStudent (String name, int ID, String grade) {
-		String query = "INSERT INTO Students (name, ID, grade) values (?,?,?)";
+	public void addStudent (String name, int ID, char grade) {
+		String query = "INSERT INTO STUDENT (name,id , grade) values(?,?,?)";
 		try {
 			PreparedStatement pStat= conn.prepareStatement(query);
-			pStat.setString (1, name);
-			pStat.setInt (2, ID);
-			pStat.setString(3, grade);
-			int theRow = pStat.executeUpdate();
-			//theRow is an integer which contains the row that the student you are looking for is 
-			//contained within
+			pStat.setString(1, name);
+			pStat.setInt(2, ID);
+			pStat.setInt(3, grade);
+			pStat.executeUpdate();
 			pStat.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
     /**
      *creates a student table if it does not already exists, no changes made if the table exists.
      */
     public void createStudentTable () {
         try {
-            startConnection();
-            String query = "CREATE TABLE IF NOT EXISTS Student (name varchar(300), id int, grade varchar(1), PRIMARY KEY(id)";
-            PreparedStatement pStat = conn.prepareStatement(query);
+            //startConnection();
+            String query = "CREATE TABLE STUDENT (name varchar(255), id integer not NULL, grade integer not NULL, PRIMARY KEY(id))";
+            Statement Stat = conn.createStatement();
             //execute the prepared statement query
-            pStat.executeUpdate();
+            Stat.executeUpdate(query);
+            Stat.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
+    public void createOfferingTable () {
+    	try {
+    		//startConnection();
+    		String query = "CREATE TABLE OFFERINGS (name varchar (300), number integer not NULL, section integer not NULL, PRIMARY KEY(number, section))";
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		//execute the prepared statement query
+    		pStat.executeUpdate();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    public void createAdminTable () {
+    	try {
+    		String query = "CREATE TABLE ADMIN (studentID integer not NULL, courseID integer not NULL, section integer not NULL, PRIMARY KEY (studentID, courseID))";
+    		PreparedStatement pStat = conn.prepareStatement (query);
+    		pStat.executeUpdate();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    public void createCourseTable () {
+    	try {
+    		String query = "CREATE TABLE COURSE (name varchar(255), number integer not NULL, PRIMARY KEY(number))";
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		pStat.executeUpdate();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    
+    
+    
+    public void addOffering (String name, int num, int section) {
+    	String query = "INSERT INTO COURSES (name,number,section) values(?,?,?)";
+    	try {
+			PreparedStatement pStat = conn.prepareStatement(query);
+			pStat.setString (1, name);
+			pStat.setInt(2, num);
+			pStat.setInt(3, section);
+			pStat.executeUpdate();
+			pStat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void unenrollInCourse (int studID, int courseID) {
+    	String query = "DELETE FROM ADMIN WHERE studentID = ? AND courseID = ?";
+    	try {
+			PreparedStatement pStat = conn.prepareStatement(query);
+			pStat.setInt(1, studID);
+			pStat.setInt(2, courseID);
+			pStat.executeUpdate();
+			pStat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void enrollInCourse (int studID, int courseID, int section) {
+    	String query = "INSERT INTO ADMIN (studentID, courseID, section) values (?,?,?)";
+    	try {
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		pStat.setInt(1,  studID);
+    		pStat.setInt(2, courseID);
+    		pStat.setInt(3, section);
+    		pStat.executeUpdate();
+    		pStat.close();
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    
+    public Student findStudent (int id) {
+		Student theStud = null;
+    	try {
+	    	String query = "SELECT * FROM STUDENTS where id=?";
+	    	PreparedStatement pStat = conn.prepareStatement(query);
+	    	pStat.setInt(1, id);
+	    	rs = pStat.executeQuery();
+	    	theStud = new Student (rs.getString("name"), rs.getInt("id"), (char)(rs.getInt("grade")));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}  
+    	return theStud;
+    }
+    
+    
+    public Course findCourse (int courseNum) {
+    	Course theCourse = null;
+    	try {
+    		String query = "SELECT * FROM COURSES where number=?";
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		pStat.setInt(1, courseNum);
+    		rs = pStat.executeQuery(query);
+    		theCourse = new Course (rs.getString("name"), rs.getInt("number"));
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return theCourse;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
+		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
+		//test.createStudentTable();
+		//test.createCourseTable();
+		//test.createAdminTable();
+		test.createOfferingTable();
 	}
 	
 	

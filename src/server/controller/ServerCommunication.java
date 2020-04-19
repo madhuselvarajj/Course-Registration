@@ -60,9 +60,8 @@ public class ServerCommunication {
 			System.out.println("Client connected");
 			out = new ObjectOutputStream(aSocket.getOutputStream());
 			in = new ObjectInputStream(aSocket.getInputStream());
-			
 			theCatalogue = new CourseCatalogue();
-			dataBase = new DBController(theCatalogue);
+			dataBase = new DBController();
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -216,6 +215,7 @@ public class ServerCommunication {
 				out.writeObject("Offering does not exist");
 				return;
 			}
+			
 			Registration regObj = new Registration(dataBase.getStudentList().get(index), theOffering);
 			//add this object to both the student and the offering's regList
 			if(regObj.addRegistration()) {
@@ -324,7 +324,6 @@ public class ServerCommunication {
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
     /**
@@ -369,12 +368,7 @@ public class ServerCommunication {
      */
 	private Course findCourse(Integer courseNum, String courseName) {
 		Course theCourse = null;
-		for(Course c: dataBase.getCourseList()) {
-			if(c.getCourseName().equals(courseName) && c.getCourseNum()==courseNum) {
-				theCourse = c;
-				break;
-			}
-		}
+		theCourse = dataBase.findCourse(courseNum);
 		return theCourse;
 	}
 	
@@ -385,15 +379,8 @@ public class ServerCommunication {
      */
 	private Student findStudent(int id) {
 		Student studentObj = null;
-		for(Student s: dataBase.getStudentList()) {
-			if(s.getId() == id) {
-				studentObj = s;
-				break;
-			}
-		}
-		
+		studentObj = dataBase.findStudent(id);
 		return studentObj;
-		
 	}
 	
 
