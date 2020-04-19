@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import server.model.Course;
 import server.model.CourseCatalogue;
@@ -240,10 +241,12 @@ public class ServerCommunication {
      */
 	private void displayAllCourses() {
 		try {
-			String output = theCatalogue.displayAllCourses();
+			String output = dataBase.viewAllCourses();
 			out.writeObject(output);
 		} catch (IOException e) {
 			System.err.println("error in displaying all courses");
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -71,6 +71,21 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
+	
+	public void addCourse (String name, int number) {
+		String query = "INSERT INTO COURSE (name, number, numberEnrolled, status) values (?,?,?,?)";
+		try {
+			PreparedStatement pStat = conn.prepareStatement(query);
+			pStat.setString(1, name);
+			pStat.setInt(2, number);
+			pStat.setInt(3, 0);
+			pStat.setInt(4, 0);
+			pStat.executeUpdate();
+			pStat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
     /**
      *creates a student table if it does not already exists, no changes made if the table exists.
      */
@@ -120,6 +135,101 @@ public class DBController {
     }
     
     
+    /**
+     * this will be called every time a new student enrolls in a course. It will increase the number of students enrolled in that course as well as the number of courses
+     * that particular student is enrolled within. 
+     * @param courseNum
+     * @param studentID
+     */
+    public void incrementNumberEnrolled (int courseNum, int studentID) {
+    	//first let's increment the number of students enrolled in that course.
+    	Course theCourse = findCourse (courseNum);
+    	int enrollment = theCourse.getNumEnrolled() + 1;
+    	String query = 	"UPDATE COURSES SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
+    	try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(query);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	//change the status of the course if the enrollment is now 8.
+    	if (enrollment == 8) {
+    		String statusUpdate = 	"UPDATE COURSES SET status = 1 WHERE number = " + courseNum;
+        	try {
+    			Statement stmt = conn.createStatement();
+    			stmt.executeUpdate(statusUpdate);
+    			stmt.close();
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	
+    	//now we need to take the student using studentid and increment the number of courses that they are
+    	//currently enrolled in
+    	
+    	Student theStud = this.findStudent(studentID);
+    	int updated = theStud.getNumOfCourses() + 1;
+    	String sql = "UPDATE STUDENTS SET numCourses = " + updated + "WHERE id = " + studentID;
+    	try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    /**
+     * this will be called every time a student decides to drop a course. It will decrease both the number of students enrolled
+     * in that course from the course database as well as the number of courses that student is shown to 
+     * be enrolled in. 
+     * @param courseNum the course number which the student is unenrolling from
+     * @param studentID the students id
+     */
+    public void decrementNumberEnrolled (int courseNum, int studentID) {
+    	//first let's increment the number of students enrolled in that course.
+    	Course theCourse = findCourse (courseNum);
+    	int enrollment = theCourse.getNumEnrolled() - 1;
+    	String query = 	"UPDATE COURSES SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
+    	try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(query);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	//change the status of the course if the enrollment is now below 8 due to the drop-out.
+    	if (enrollment == 7) {
+    		String statusUpdate = 	"UPDATE COURSES SET status = 0 WHERE number = " + courseNum;
+        	try {
+    			Statement stmt = conn.createStatement();
+    			stmt.executeUpdate(statusUpdate);
+    			stmt.close();
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	
+    	//now we need to take the student using studentid and increment the number of courses that they are
+    	//currently enrolled in
+    	
+    	Student theStud = this.findStudent(studentID);
+    	int updated = theStud.getNumOfCourses() - 1;
+    	String sql = "UPDATE STUDENTS SET numCourses = " + updated + "WHERE id = " + studentID;
+    	try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    
+    
     
     
     public void addOffering (String name, int num, int section) {
@@ -148,6 +258,7 @@ public class DBController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+    	decrementNumberEnrolled(courseID, studID);
     }
     
     public String viewAllEnrolled (int studID) {
@@ -191,11 +302,15 @@ public class DBController {
     		pStat.setInt(1,  studID);
     		pStat.setInt(2, courseID);
     		pStat.setInt(3, section);
-    		pStat.executeUpdate();
+    		pStat.executeQuery();
     		pStat.close();
+    		
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
+    	
+    	System.out.println("got to the increment statement");
+    	incrementNumberEnrolled(courseID, studID);
     }
     
     
@@ -242,6 +357,12 @@ public class DBController {
     }
     
     public void populateCourses() {
+    	addCourse ("ENGG", 233);
+    	addCourse ("PHYS", 259);
+    	addCourse ("PSYC", 200);
+    	addCourse ("ENSF", 409);
+    	addCourse ("ENEL", 353);
+    	addCourse ("ENCM", 369);
     	
     }
     
@@ -264,6 +385,9 @@ public class DBController {
 		//test.createCourseTable();
 		//test.createAdminTable();
 		//test.createOfferingTable();
+		//test.populateStudents();
+		//test.populateCourses();
+		
 	}
 	
 	
