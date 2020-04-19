@@ -77,7 +77,7 @@ public class DBController {
     public void createStudentTable () {
         try {
             //startConnection();
-            String query = "CREATE TABLE STUDENT (name varchar(255), id integer not NULL, grade integer not NULL, PRIMARY KEY(id))";
+            String query = "CREATE TABLE STUDENT (name varchar(255), id integer not NULL, grade integer not NULL, numCourses integer not NULL, PRIMARY KEY(id))";
             Statement Stat = conn.createStatement();
             //execute the prepared statement query
             Stat.executeUpdate(query);
@@ -111,7 +111,7 @@ public class DBController {
     
     public void createCourseTable () {
     	try {
-    		String query = "CREATE TABLE COURSE (name varchar(255), number integer not NULL, PRIMARY KEY(number))";
+    		String query = "CREATE TABLE COURSE (name varchar(255), number integer not NULL, numberEnrolled integer not NULL, status integer, PRIMARY KEY(number))";
     		PreparedStatement pStat = conn.prepareStatement(query);
     		pStat.executeUpdate();
     	} catch (Exception e) {
@@ -135,6 +135,7 @@ public class DBController {
 			e.printStackTrace();
 		}
     }
+
     
     public void unenrollInCourse (int studID, int courseID) {
     	String query = "DELETE FROM ADMIN WHERE studentID = ? AND courseID = ?";
@@ -148,6 +149,40 @@ public class DBController {
 			e.printStackTrace();
 		}
     }
+    
+    public String viewAllEnrolled (int studID) {
+    	String query = "SELECT * FROM ADMIN WHERE studentID = ?";
+		String output = "";
+    	try {
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		pStat.setInt(1, studID);
+    		rs = pStat.executeQuery();
+    		while (rs.next()) {
+    			Course find = findCourse(rs.getInt("courseid"));
+    			output += "enrolled in" + find.getCourseName() + " " + find.getCourseNum() + "\n";
+    		}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    		return output;
+    }
+    
+    public String viewAllCourses () {
+    	String query = "SELECT * FROM COURSES";
+    	String output = "";
+    	try {
+    		PreparedStatement pStat = conn.prepareStatement(query);
+    		rs = pStat.executeQuery();
+    		while (rs.next()) {
+    			output += "Course: " + rs.getString("name") + " " + rs.getInt("number") + "Students enrolled: " + rs.getInt("numberEnrolled") + "\n";
+    		}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	return output;
+    }
+    
+    
     
     public void enrollInCourse (int studID, int courseID, int section) {
     	String query = "INSERT INTO ADMIN (studentID, courseID, section) values (?,?,?)";
@@ -171,8 +206,7 @@ public class DBController {
 	    	PreparedStatement pStat = conn.prepareStatement(query);
 	    	pStat.setInt(1, id);
 	    	rs = pStat.executeQuery();
-	    	theStud = new Student (rs.getString("name"), rs.getInt("id"), (char)(rs.getInt("grade")));
-
+	    	theStud = new Student (rs.getString("name"), rs.getInt("id"), (char)(rs.getInt("grade")), rs.getInt("numCourses"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}  
@@ -187,11 +221,28 @@ public class DBController {
     		PreparedStatement pStat = conn.prepareStatement(query);
     		pStat.setInt(1, courseNum);
     		rs = pStat.executeQuery(query);
-    		theCourse = new Course (rs.getString("name"), rs.getInt("number"));
+    		theCourse = new Course (rs.getString("name"), rs.getInt("number"), rs.getInt("numberEnrolled"), rs.getInt("status"));
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
     	return theCourse;
+    }
+    
+    public void populateStudents () {
+    	addStudent ("Bob", 1000, 'B');
+    	addStudent ("Dave", 2000, 'C');
+    	addStudent ("Kate", 3000, 'A');
+    	addStudent ("Tina", 4000, 'B');
+    	addStudent ("Adam", 5000, 'A');
+    	addStudent ("Chris", 6000, 'D');
+    	addStudent ("Cody", 7000, 'B');
+    	addStudent ("Sam", 8000, 'A');
+    	addStudent ("Dan", 9000, 'C');
+    	addStudent ("Cam", 10000, 'D');
+    }
+    
+    public void populateCourses() {
+    	
     }
     
     
@@ -212,7 +263,7 @@ public class DBController {
 		//test.createStudentTable();
 		//test.createCourseTable();
 		//test.createAdminTable();
-		test.createOfferingTable();
+		//test.createOfferingTable();
 	}
 	
 	

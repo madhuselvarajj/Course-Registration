@@ -60,6 +60,7 @@ public class ServerCommunication {
 			System.out.println("Client connected");
 			out = new ObjectOutputStream(aSocket.getOutputStream());
 			in = new ObjectInputStream(aSocket.getInputStream());
+			
 			theCatalogue = new CourseCatalogue();
 			dataBase = new DBController();
 		} catch (IOException e) {
@@ -159,13 +160,10 @@ public class ServerCommunication {
      *@param num: the number of the course to be searched for
      */
 	private void searchForCourse(String name, String num) {
-		System.out.println("hi");
 		try {
 			Integer courseNum = Integer.parseInt(num);
 			name = name.toUpperCase();
-			String output = theCatalogue.searchForCourse(courseNum);
-			
-			System.out.println(output);
+			Course output = dataBase.findCourse (courseNum);
 			if(output == null) {
 				out.writeObject("Course was not found.");
 			}else {
@@ -192,44 +190,11 @@ public class ServerCommunication {
 			Integer sectionNum = Integer.parseInt(secNum);
 			courseName = courseName.toUpperCase();
 			
-			//verify the student is in the database
-			Student studentObj = findStudent(id);
-			if(studentObj == null) {
-				out.writeObject("Id not valid");
-				return;
-			}
+			dataBase.enrollInCourse (id, courseNum, sectionNum);
 			
-			//find location ofStudentObj in database
-			int index = findStudentLocation(studentObj);
-			
-			//find the course to register the student in
-			Course theCourse = findCourse(courseNum, courseName);
-			if(theCourse == null) {
-				out.writeObject("Course does not exist");
-				return;
-			}
-			
-			//find the offering to register the student in
-			CourseOffering theOffering = findOffering(sectionNum, theCourse);
-			if(theOffering == null) {
-				out.writeObject("Offering does not exist");
-				return;
-			}
-			
-			Registration regObj = new Registration(dataBase.getStudentList().get(index), theOffering);
-			//add this object to both the student and the offering's regList
-			if(regObj.addRegistration()) {
-				out.writeObject("Registration complete. " + studentObj.getName() + " is enrolled in " + theCourse.getCourseName() 
-				+ " "+theCourse.getCourseNum()+" section " +sectionNum);
-			}else {
-				out.writeObject("Regstration failed. Student enrolled in max of 6 courses");
-			}
-			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} 
-		
-		
+		}
 	}
 	
 	/**
@@ -260,27 +225,9 @@ public class ServerCommunication {
 				return;
 			}
 			
-			CourseOffering theOffering = findOffering(sectionNum, theCourse);
-			if(theOffering == null) {
-				out.writeObject("Offering does not exist");
-				return;
-			}
+			dataBase.unenrollInCourse(id, courseNum);
 			
-			Registration regObj = null;
-			for(Registration r: theOffering.getRegList()) {
-				if(r.getStudent() == studentObj && r.getOffering() == theOffering) {
-					regObj = r;
-					break;
-				}
-			}
-			if(regObj == null) {
-				out.writeObject("Registration does not exist.");
-				return;
-			}
-			regObj.removeRegistration();
-			out.writeObject("Course was successfully removed");
-			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -309,56 +256,17 @@ public class ServerCommunication {
 	private void viewAllCoursesTakenByStudent(String studentId) {
 		try {	
 			Integer id = Integer.parseInt(studentId); 
-			
+			String output = dataBase.viewAllEnrolled(id);
+			out.writeObject (output);
 			//search through database for that student
-			Student studentObj = findStudent(id);
-			if(studentObj == null) {
-				out.writeObject("Id not valid");
-				return;
-			}
-			if(studentObj.getRegList().size()==0) //if student's regList is empty 
-				out.writeObject(studentObj.getName() + " is not registered in anything.");
-			else
-				out.writeObject(studentObj.getName() + " is registered in: \n"+studentObj.printRegList());
-			
-		}catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
-    /**
-     *this will find the location of a student in the database
-     *@return an int with the index of the student object's location
-     *@param studentObj the student to search for
-     */
-	private int findStudentLocation(Student studentObj) {
-		int i = 0;
-		for(Student s: dataBase.getStudentList()) {
-			if(studentObj.getId() == s.getId()) {
-				break;
-			}
-			i++;
-		}
-		return i;
-	}
 	
-    /**
-     *this will find the courseOffering with the specified section number and course objecct
-     *and return it.
-     *@return the CourseOffering object with the specified params
-     *@param sectionNum : the section number for the specified course offering
-     *@param theCourse : the course the student is looking to find an offering for
-     */
-	private CourseOffering findOffering(Integer sectionNum, Course theCourse) {
-		CourseOffering theOffering = null;
-		for(CourseOffering o: theCourse.getOfferingList()) {
-			if(o.getSecNum() == sectionNum) {
-				theOffering = o;
-				break;
-			}
-		}
-		return theOffering;
-	}
+
 	
     /**
      *findCourse will return the Course object with the specified courseNum and name
@@ -366,6 +274,7 @@ public class ServerCommunication {
      *@param courseName : the course name to search
      *@return a course object with the name and number, else null if non existent.
      */
+     
 	private Course findCourse(Integer courseNum, String courseName) {
 		Course theCourse = null;
 		theCourse = dataBase.findCourse(courseNum);
@@ -381,6 +290,7 @@ public class ServerCommunication {
 		Student studentObj = null;
 		studentObj = dataBase.findStudent(id);
 		return studentObj;
+		
 	}
 	
 
