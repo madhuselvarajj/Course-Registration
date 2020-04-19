@@ -25,6 +25,7 @@ public class Course {
 	/**
 	 * Status of the course (if the course is running or not). True if numEnrolled >=8. 
 	 */
+	
 	private boolean status;
 	
 	/**
@@ -50,7 +51,22 @@ public class Course {
 		preReq = new ArrayList<Course>();
 		setOfferingList(new ArrayList<CourseOffering>());
 		numEnrolled = 0;
+	} 
+	
+	public Course (String name, int num, int enrolled, int Status) {
+		this.setCourseName(name);
+		this.setCourseNum(num);
+		numEnrolled = enrolled;
+		if (Status == 1) {
+			status = true;
+		}
+		else {
+			status = false;
+		}
+		
 	}
+	
+
 	
 	/**
 	 * Determines the status of the course based on if the number enrolled is at least 8

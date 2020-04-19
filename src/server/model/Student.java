@@ -35,7 +35,7 @@ public class Student{
 	 * Default constructor
 	 */
 	public Student(){
-		this(" ", 0, ' ');
+		this(" ", 0, ' ', 0);
 	}
 	
 	/**
@@ -44,12 +44,12 @@ public class Student{
 	 * @param id The id of the student
 	 * @param grade The student's grade
 	 */
-	public Student(String name, int id, char grade){
+	public Student(String name, int id, char grade, int courses){
 		this.setName(name);
 		this.id = id;
 		this.setGrade(grade);
 		regList = new ArrayList<Registration>();
-		numOfCourses = 0;
+		numOfCourses = courses;
 	}
 	
 	/**
