@@ -262,20 +262,21 @@ public class DBController {
      * @return the string object containing all courses the student is enrolled in
      */
     public String viewAllEnrolled (int studID) {
-    	String query = "SELECT * FROM ADMIN WHERE studentID = ?";
-		String output = "";
+    	String query = "SELECT * FROM ADMIN";
+    	String output = "";
     	try {
     		PreparedStatement pStat = conn.prepareStatement(query);
-    		pStat.setInt(1, studID);
-    		rs = pStat.executeQuery();
-    		while (rs.next()) {
-    			Course find = findCourse(rs.getInt("courseid"));
-    			output += "Enrolled in: " + find.getCourseName() + " " + find.getCourseNum() + "\n";
+    		ResultSet resSet = pStat.executeQuery();
+    		while (resSet.next()) {
+    			if (resSet.getInt("studentID") == studID) {
+    				Course theCourse = findCourse (resSet.getInt("courseID"));
+    				output += "enrolled in: " + theCourse.getCourseName() + " " + theCourse.getCourseNum() + "\n";
+    			}
     		}
-    	} catch (Exception e) {
+    	} catch (SQLException e) {
     		e.printStackTrace();
     	}
-    		return output;
+    	return output;
     }
     /**
      * this will display all the courses in a string which are available currently in the COURSE databse
@@ -337,7 +338,7 @@ public class DBController {
     public Student findStudent (int id) {
 		Student theStud = null;
     	try {
-	    	String query = "SELECT * FROM STUDENT where id=?";
+	    	String query = "SELECT * FROM STUDENT WHERE id=?";
 	    	PreparedStatement pStat = conn.prepareStatement(query);
 	    	pStat.setInt(1, id);
 	    	rs = pStat.executeQuery();
@@ -401,6 +402,7 @@ public class DBController {
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
+
 		
 		Server server = new Server();
 		server.communicateWithServer(test);
@@ -411,7 +413,6 @@ public class DBController {
 		//test.createAdminTable();
 
 		//test.populateStudents();
-//		test.enrollInCourse(2000, 233, 1);
 //		System.out.println(test.viewAllEnrolled(2000));
 		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createCourseTable();
