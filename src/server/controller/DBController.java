@@ -18,9 +18,6 @@ import server.model.*;
 *course will contain all of the courses offered  - therefore it has a composite key
 *composed of the courseNumber.
 *
-* courseOffering will contain the sections for the course - therefore it has a composite keu
-* composed of courseName and section
-* 
 * 
 *student will contain all of the students and their information
 *
@@ -63,7 +60,12 @@ public class DBController {
 		}
 	}
 
-    
+    /**
+     * this function will add a student to the STUDENT table in the database
+     * @param name the name of the student to add
+     * @param ID the students id (primary key)
+     * @param grade the grade of the student (will be stored as an ASCII value in the database)
+     */
 	public void addStudent (String name, int ID, char grade) {
 		String query = "INSERT INTO STUDENT (name,id , grade, numCourses) values(?,?,?,?)";
 		try {
@@ -79,7 +81,11 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * this function will add a course to the COURSE table in the database
+	 * @param name the name of the course to add
+	 * @param number the course number 
+	 */
 	public void addCourse (String name, int number) {
 		String query = "INSERT INTO COURSE (name, number, numberEnrolled, status) values (?,?,?,?)";
 		try {
@@ -95,7 +101,7 @@ public class DBController {
 		}
 	}
     /**
-     *creates a student table if it does not already exists, no changes made if the table exists.
+     *creates a student table in the coursereg database
      */
     public void createStudentTable () {
         try {
@@ -109,19 +115,12 @@ public class DBController {
             e.printStackTrace();
         }
     }
-    
-    public void createOfferingTable () {
-    	try {
-    		//startConnection();
-    		String query = "CREATE TABLE OFFERINGS (name varchar (300), number integer not NULL, section integer not NULL, PRIMARY KEY(number, section))";
-    		PreparedStatement pStat = conn.prepareStatement(query);
-    		//execute the prepared statement query
-    		pStat.executeUpdate();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    }
-    
+
+
+    /**
+     * the admin table will contain a list linking students to the courses which they are taking.
+     * each new enrollment in a course will create a new admin entry
+     */
     public void createAdminTable () {
     	try {
     		String query = "CREATE TABLE ADMIN (studentID integer not NULL, courseID integer not NULL, section integer not NULL, PRIMARY KEY (studentID, courseID))";
@@ -131,7 +130,10 @@ public class DBController {
     		e.printStackTrace();
     	}
     }
-    
+    /**
+     * this will create the table COURSE in the coursereg database which will contain a list of all 
+     * available courses to be enrolled in
+     */
     public void createCourseTable () {
     	try {
     		String query = "CREATE TABLE COURSE (name varchar(255), number integer not NULL, numberEnrolled integer not NULL, status integer, PRIMARY KEY(number))";
@@ -197,7 +199,7 @@ public class DBController {
      * @param studentID the students id
      */
     public void decrementNumberEnrolled (int courseNum, int studentID) {
-    	//first let's increment the number of students enrolled in that course.
+    	//first let's decrement the number of students enrolled in that course.
     	Course theCourse = findCourse (courseNum);
     	int enrollment = theCourse.getNumEnrolled() - 1;
     	String query = 	"UPDATE COURSE SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
@@ -221,7 +223,7 @@ public class DBController {
     		}
     	}
     	
-    	//now we need to take the student using studentid and increment the number of courses that they are
+    	//now we need to take the student using studentid and decrement the number of courses that they are
     	//currently enrolled in
     	
     	Student theStud = this.findStudent(studentID);
@@ -236,25 +238,11 @@ public class DBController {
 		}
     }
     
-    
-    
-    
-    
-    public void addOffering (String name, int num, int section) {
-    	String query = "INSERT INTO COURSE (name,number,section) values(?,?,?)";
-    	try {
-			PreparedStatement pStat = conn.prepareStatement(query);
-			pStat.setString (1, name);
-			pStat.setInt(2, num);
-			pStat.setInt(3, section);
-			pStat.executeUpdate();
-			pStat.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    }
 
-    
+
+    /**
+     * this function will be used to remove a student-course relationship from the admin table
+     */
     public void unenrollInCourse (int studID, int courseID) {
     	String query = "DELETE FROM ADMIN WHERE studentID = ? AND courseID = ?";
     	try {
@@ -268,7 +256,11 @@ public class DBController {
 		}
     	decrementNumberEnrolled(courseID, studID);
     }
-    
+    /**
+     * this will return a string containing all of the courses which a student is currently enrolled in
+     * @param studID the id of the student requesting the information
+     * @return the string object containing all courses the student is enrolled in
+     */
     public String viewAllEnrolled (int studID) {
     	String query = "SELECT * FROM ADMIN WHERE studentID = ?";
 		String output = "";
@@ -285,7 +277,10 @@ public class DBController {
     	}
     		return output;
     }
-    
+    /**
+     * this will display all the courses in a string which are available currently in the COURSE databse
+     * @return a string containing all courses
+     */
     public String viewAllCourses () {
     	String query = "SELECT * FROM COURSE";
     	String output = "";
@@ -302,7 +297,13 @@ public class DBController {
     }
     
     
-    
+    /**
+     * this will be used to enroll a student in a course by creating a new student-course relationship
+     * in the admin table
+     * @param studID the student id to enroll in the course
+     * @param courseID the course id the student would like to enroll in
+     * @param section the section of that course the student will be in
+     */
     public void enrollInCourse (int studID, int courseID, int section) {
     	String query = "INSERT INTO ADMIN (studentID, courseID, section) values (?,?,?)";
     	try {
@@ -322,7 +323,11 @@ public class DBController {
     	incrementNumberEnrolled(courseID, studID);
     }
     
-    
+    /**
+     * this will return a student object from the database who has the id speicified
+     * @param id the student id to find from the database
+     * @return the student object
+     */
     public Student findStudent (int id) {
 		Student theStud = null;
     	try {
@@ -338,7 +343,12 @@ public class DBController {
     	return theStud;
     }
     
-    
+    /**
+     * this will return a course object relating to the course with the coursenum as specified in the 
+     * parameters
+     * @param courseNum the number of the course which will be searched for
+     * @return the course object containing that course number
+     */
     public Course findCourse (int courseNum) {
     	Course theCourse = null;
     	try {
@@ -353,7 +363,9 @@ public class DBController {
     	}
     	return theCourse;
     }
-    
+    /**
+     * this will add 10 entries to the STUDENT table
+     */
     public void populateStudents () {
     	addStudent ("Bob", 1000, 'B');
     	addStudent ("Dave", 2000, 'C');
@@ -366,7 +378,9 @@ public class DBController {
     	addStudent ("Dan", 9000, 'C');
     	addStudent ("Cam", 10000, 'D');
     }
-    
+    /**
+     * this will add 6 entries to the COURSE table
+     */
     public void populateCourses() {
     	addCourse ("ENGG", 233);
     	addCourse ("PHYS", 259);
