@@ -101,7 +101,7 @@ public class Communication {
     
 	public static void main (String [] args) {
 		MainFrame m = new MainFrame();
-		Communication c = new Communication("localhost", 1010); 
+		Communication c = new Communication("localhost", 1011); 
 		MainFrameController v = new MainFrameController(m,c);
 		
 	}

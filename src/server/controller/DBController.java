@@ -45,7 +45,14 @@ public class DBController {
 			Class.forName(driver);
 			//using localHost here
 			String url = "jdbc:oracle:thin:@root:3306/courseReg";
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", credentialStore.USER, credentialStore.PASS);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+					credentialStore.USER, credentialStore.PASS);
+			
+			//ignore this
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+//					"root", "root");
+			
+			
 			System.out.println("connection accepted");
 			theStatement = conn.createStatement();
 			//rs is what we will use to communicate queries.
@@ -384,12 +391,14 @@ public class DBController {
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
+		ServerCommunication server = new ServerCommunication(test);
+		server.communicateWithClient();
 		//test.createStudentTable();
 		//test.createAdminTable();
 
 		//test.populateStudents();
-		test.enrollInCourse(2000, 233, 1);
-		System.out.println(test.viewAllEnrolled(2000));
+//		test.enrollInCourse(2000, 233, 1);
+//		System.out.println(test.viewAllEnrolled(2000));
 		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createCourseTable();
 		//test.createOfferingTable();

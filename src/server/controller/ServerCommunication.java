@@ -54,16 +54,17 @@ public class ServerCommunication {
      *It will instantiate the input and output streams as well as the relevant sockets and
      *let the user know when a connection has been achieved.
      */
-	public ServerCommunication(){
+	public ServerCommunication(DBController dataBase){
 		try {
-			serverSocket = new ServerSocket(1010);
+			serverSocket = new ServerSocket(1011);
 			aSocket = serverSocket.accept();
 			System.out.println("Client connected");
 			out = new ObjectOutputStream(aSocket.getOutputStream());
 			in = new ObjectInputStream(aSocket.getInputStream());
 			
-			theCatalogue = new CourseCatalogue();
-			dataBase = new DBController();
+//			theCatalogue = new CourseCatalogue();
+//			dataBase = new DBController();
+			this.dataBase = dataBase;
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -168,7 +169,8 @@ public class ServerCommunication {
 			if(output == null) {
 				out.writeObject("Course was not found.");
 			}else {
-				out.writeObject(output);
+//				out.writeObject(output);
+				out.writeObject("course was found....fix this because it needs to show course information");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -192,7 +194,7 @@ public class ServerCommunication {
 			courseName = courseName.toUpperCase();
 			
 			dataBase.enrollInCourse (id, courseNum, sectionNum);
-			
+			out.writeObject("course added"); //fix to show which course was added...
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -227,6 +229,7 @@ public class ServerCommunication {
 			}
 			
 			dataBase.unenrollInCourse(id, courseNum);
+			out.writeObject("course removed"); //fix this to show which course was removed...
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -297,8 +300,8 @@ public class ServerCommunication {
 	}
 	
 
-	public static void main (String [] args) {
-		ServerCommunication sv = new ServerCommunication();
-		sv.communicateWithClient();
-	}
+//	public static void main (String [] args) {
+//		ServerCommunication sv = new ServerCommunication();
+//		sv.communicateWithClient();
+//	}
 }
