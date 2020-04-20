@@ -146,7 +146,7 @@ public class DBController {
     	//first let's increment the number of students enrolled in that course.
     	Course theCourse = findCourse (courseNum);
     	int enrollment = theCourse.getNumEnrolled() + 1;
-    	String query = 	"UPDATE COURSE SET numEnrolled = " + enrollment + " WHERE number = " + courseNum;
+    	String query = 	"UPDATE COURSE SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(query);
@@ -172,7 +172,7 @@ public class DBController {
     	System.out.println("update 2");
     	Student theStud = this.findStudent(studentID);
     	int updated = theStud.getNumOfCourses() + 1;
-    	String sql = "UPDATE STUDENT SET numCourses = " + updated + "WHERE id = " + studentID;
+    	String sql = "UPDATE STUDENT SET numCourses = " + updated + " WHERE id = " + studentID;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -219,7 +219,7 @@ public class DBController {
     	
     	Student theStud = this.findStudent(studentID);
     	int updated = theStud.getNumOfCourses() - 1;
-    	String sql = "UPDATE STUDENT SET numCourses = " + updated + "WHERE id = " + studentID;
+    	String sql = "UPDATE STUDENT SET numCourses = " + updated + " WHERE id = " + studentID;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -271,7 +271,7 @@ public class DBController {
     		rs = pStat.executeQuery();
     		while (rs.next()) {
     			Course find = findCourse(rs.getInt("courseid"));
-    			output += "enrolled in" + find.getCourseName() + " " + find.getCourseNum() + "\n";
+    			output += "enrolled in " + find.getCourseName() + " " + find.getCourseNum() + "\n";
     		}
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -388,8 +388,8 @@ public class DBController {
 		//test.createAdminTable();
 
 		//test.populateStudents();
-		test.unenrollInCourse(4000, 233);
-		System.out.println(test.viewAllCourses());
+		test.enrollInCourse(2000, 233, 1);
+		System.out.println(test.viewAllEnrolled(2000));
 		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createCourseTable();
 		//test.createOfferingTable();
