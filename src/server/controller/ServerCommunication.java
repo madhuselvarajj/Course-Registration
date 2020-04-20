@@ -163,12 +163,15 @@ public class ServerCommunication implements Runnable{
 		try {
 			Integer courseNum = Integer.parseInt(num);
 			name = name.toUpperCase();
-			Course output = dataBase.findCourse (courseNum);
-			if(output == null) {
+			Course theCourse = dataBase.findCourse (courseNum);
+			if(theCourse == null) {
 				out.writeObject("Course was not found.");
 			}else {
 //				out.writeObject(output);
-				out.writeObject("course was found....fix this because it needs to show course information");
+				String output = theCourse.getCourseName() + " "+ theCourse.getCourseNum() + "\nNumber enrolled: " +theCourse.getNumEnrolled()
+				+"\nStatus: " +theCourse.getStatus();
+//				System.out.println(output);
+				out.writeObject(output);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -163,7 +163,12 @@ public class Course {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
+	public String getStatus() {
+		if(status)
+			return "Course is running";
+		else
+			return "Course is not running. Waiting for " + (8-this.numEnrolled) + " more students to enroll in this course.";
+	}
 	/**
 	 * Returns a String containing all of the information about a course. 
 	 * Example:
