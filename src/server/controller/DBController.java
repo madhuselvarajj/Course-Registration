@@ -270,7 +270,7 @@ public class DBController {
     		rs = pStat.executeQuery();
     		while (rs.next()) {
     			Course find = findCourse(rs.getInt("courseid"));
-    			output += "enrolled in " + find.getCourseName() + " " + find.getCourseNum() + "\n";
+    			output += "Enrolled in: " + find.getCourseName() + " " + find.getCourseNum() + "\n";
     		}
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -287,8 +287,14 @@ public class DBController {
     	try {
     		PreparedStatement pStat = conn.prepareStatement(query);
     		rs = pStat.executeQuery();
+    		String theStatus ="";
     		while (rs.next()) {
-    			output += "Course: " + rs.getString("name") + " " + rs.getInt("number") + "Students enrolled: " + rs.getInt("numberEnrolled") + "\n";
+    			if(rs.getInt("status") == 0)
+    				theStatus = "Course is not running, waiting for 8 students to enrol.";
+    			else
+    				theStatus = "Course is running.";
+    			
+    			output += "Course: " + rs.getString("name") + " " + rs.getInt("number") + "\nNumber of students enrolled: " + rs.getInt("numberEnrolled") + "\nStatus of the course: "+theStatus +"\n\n";
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

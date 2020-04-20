@@ -268,8 +268,9 @@ public class ServerCommunication implements Runnable{
 		try {	
 			Integer id = Integer.parseInt(studentId); 
 			String output = dataBase.viewAllEnrolled(id);
+			
 			out.writeObject (output);
-			//search through database for that student
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
