@@ -167,10 +167,8 @@ public class ServerCommunication implements Runnable{
 			if(theCourse == null) {
 				out.writeObject("Course was not found.");
 			}else {
-//				out.writeObject(output);
 				String output = theCourse.getCourseName() + " "+ theCourse.getCourseNum() + "\nNumber enrolled: " +theCourse.getNumEnrolled()
 				+"\nStatus: " +theCourse.getStatus();
-//				System.out.println(output);
 				out.writeObject(output);
 			}
 		} catch (IOException e) {
@@ -193,9 +191,13 @@ public class ServerCommunication implements Runnable{
 			Integer courseNum = Integer.parseInt(num);
 			Integer sectionNum = Integer.parseInt(secNum);
 			courseName = courseName.toUpperCase();
+			Student theStudent = findStudent(id);
 			
 			dataBase.enrollInCourse (id, courseNum, sectionNum);
-			out.writeObject("course added"); //fix to show which course was added...
+			
+			String output = courseName + " "+courseNum+ " was added to " + theStudent.getName() + "'s courses";
+			out.writeObject(output);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -230,7 +232,9 @@ public class ServerCommunication implements Runnable{
 			}
 			
 			dataBase.unenrollInCourse(id, courseNum);
-			out.writeObject("course removed"); //fix this to show which course was removed...
+			
+			String output = courseName + " "+courseNum+ " was removed from " + studentObj.getName() + "'s courses";
+			out.writeObject(output); 
 			
 		} catch (Exception e) {
 			e.printStackTrace();
