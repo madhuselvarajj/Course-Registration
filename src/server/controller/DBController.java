@@ -58,12 +58,13 @@ public class DBController {
 
     
 	public void addStudent (String name, int ID, char grade) {
-		String query = "INSERT INTO STUDENT (name,id , grade) values(?,?,?)";
+		String query = "INSERT INTO STUDENT (name,id , grade, numCourses) values(?,?,?,?)";
 		try {
 			PreparedStatement pStat= conn.prepareStatement(query);
 			pStat.setString(1, name);
 			pStat.setInt(2, ID);
 			pStat.setInt(3, grade);
+			pStat.setInt(4, 0);
 			pStat.executeUpdate();
 			pStat.close();
 			
@@ -145,7 +146,7 @@ public class DBController {
     	//first let's increment the number of students enrolled in that course.
     	Course theCourse = findCourse (courseNum);
     	int enrollment = theCourse.getNumEnrolled() + 1;
-    	String query = 	"UPDATE COURSES SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
+    	String query = 	"UPDATE COURSE SET numEnrolled = " + enrollment + " WHERE number = " + courseNum;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(query);
@@ -156,7 +157,7 @@ public class DBController {
     	
     	//change the status of the course if the enrollment is now 8.
     	if (enrollment == 8) {
-    		String statusUpdate = 	"UPDATE COURSES SET status = 1 WHERE number = " + courseNum;
+    		String statusUpdate = 	"UPDATE COURSE SET status = 1 WHERE number = " + courseNum;
         	try {
     			Statement stmt = conn.createStatement();
     			stmt.executeUpdate(statusUpdate);
@@ -168,10 +169,10 @@ public class DBController {
     	
     	//now we need to take the student using studentid and increment the number of courses that they are
     	//currently enrolled in
-    	
+    	System.out.println("update 2");
     	Student theStud = this.findStudent(studentID);
     	int updated = theStud.getNumOfCourses() + 1;
-    	String sql = "UPDATE STUDENTS SET numCourses = " + updated + "WHERE id = " + studentID;
+    	String sql = "UPDATE STUDENT SET numCourses = " + updated + "WHERE id = " + studentID;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -192,7 +193,7 @@ public class DBController {
     	//first let's increment the number of students enrolled in that course.
     	Course theCourse = findCourse (courseNum);
     	int enrollment = theCourse.getNumEnrolled() - 1;
-    	String query = 	"UPDATE COURSES SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
+    	String query = 	"UPDATE COURSE SET numberEnrolled = " + enrollment + " WHERE number = " + courseNum;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(query);
@@ -203,7 +204,7 @@ public class DBController {
     	
     	//change the status of the course if the enrollment is now below 8 due to the drop-out.
     	if (enrollment == 7) {
-    		String statusUpdate = 	"UPDATE COURSES SET status = 0 WHERE number = " + courseNum;
+    		String statusUpdate = 	"UPDATE COURSE SET status = 0 WHERE number = " + courseNum;
         	try {
     			Statement stmt = conn.createStatement();
     			stmt.executeUpdate(statusUpdate);
@@ -218,7 +219,7 @@ public class DBController {
     	
     	Student theStud = this.findStudent(studentID);
     	int updated = theStud.getNumOfCourses() - 1;
-    	String sql = "UPDATE STUDENTS SET numCourses = " + updated + "WHERE id = " + studentID;
+    	String sql = "UPDATE STUDENT SET numCourses = " + updated + "WHERE id = " + studentID;
     	try {
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -233,7 +234,7 @@ public class DBController {
     
     
     public void addOffering (String name, int num, int section) {
-    	String query = "INSERT INTO COURSES (name,number,section) values(?,?,?)";
+    	String query = "INSERT INTO COURSE (name,number,section) values(?,?,?)";
     	try {
 			PreparedStatement pStat = conn.prepareStatement(query);
 			pStat.setString (1, name);
@@ -279,7 +280,7 @@ public class DBController {
     }
     
     public String viewAllCourses () {
-    	String query = "SELECT * FROM COURSES";
+    	String query = "SELECT * FROM COURSE";
     	String output = "";
     	try {
     		PreparedStatement pStat = conn.prepareStatement(query);
@@ -302,7 +303,7 @@ public class DBController {
     		pStat.setInt(1,  studID);
     		pStat.setInt(2, courseID);
     		pStat.setInt(3, section);
-    		pStat.executeQuery();
+    		pStat.executeUpdate();
     		pStat.close();
     		
     	} catch (SQLException e) {
@@ -310,6 +311,7 @@ public class DBController {
     	}
     	
     	System.out.println("got to the increment statement");
+    	
     	incrementNumberEnrolled(courseID, studID);
     }
     
@@ -317,10 +319,11 @@ public class DBController {
     public Student findStudent (int id) {
 		Student theStud = null;
     	try {
-	    	String query = "SELECT * FROM STUDENTS where id=?";
+	    	String query = "SELECT * FROM STUDENT where id=?";
 	    	PreparedStatement pStat = conn.prepareStatement(query);
 	    	pStat.setInt(1, id);
 	    	rs = pStat.executeQuery();
+	    	rs.first();
 	    	theStud = new Student (rs.getString("name"), rs.getInt("id"), (char)(rs.getInt("grade")), rs.getInt("numCourses"));
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -332,10 +335,11 @@ public class DBController {
     public Course findCourse (int courseNum) {
     	Course theCourse = null;
     	try {
-    		String query = "SELECT * FROM COURSES where number=?";
+    		String query = "SELECT * FROM COURSE where number=?";
     		PreparedStatement pStat = conn.prepareStatement(query);
     		pStat.setInt(1, courseNum);
-    		rs = pStat.executeQuery(query);
+    		rs = pStat.executeQuery();
+    		rs.first();
     		theCourse = new Course (rs.getString("name"), rs.getInt("number"), rs.getInt("numberEnrolled"), rs.getInt("status"));
     	} catch (SQLException e) {
     		e.printStackTrace();
@@ -380,12 +384,15 @@ public class DBController {
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
-		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createStudentTable();
-		//test.createCourseTable();
 		//test.createAdminTable();
-		//test.createOfferingTable();
+
 		//test.populateStudents();
+		test.unenrollInCourse(4000, 233);
+		System.out.println(test.viewAllCourses());
+		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
+		//test.createCourseTable();
+		//test.createOfferingTable();
 		//test.populateCourses();
 		
 	}
