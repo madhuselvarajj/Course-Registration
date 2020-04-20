@@ -29,7 +29,6 @@ import server.model.*;
 public class DBController {
 	private Connection conn;
 	private Statement theStatement;
-	private ResultSet rs;
 	/**
 	 * the purpose of this is to connect to our course registration database created in mySQL. 
 	 */
@@ -287,7 +286,7 @@ public class DBController {
     	String output = "";
     	try {
     		PreparedStatement pStat = conn.prepareStatement(query);
-    		rs = pStat.executeQuery();
+    		ResultSet rs = pStat.executeQuery();
     		String theStatus ="";
     		while (rs.next()) {
     			if(rs.getInt("status") == 0)
@@ -341,7 +340,7 @@ public class DBController {
 	    	String query = "SELECT * FROM STUDENT WHERE id=?";
 	    	PreparedStatement pStat = conn.prepareStatement(query);
 	    	pStat.setInt(1, id);
-	    	rs = pStat.executeQuery();
+	    	ResultSet rs = pStat.executeQuery();
 	    	rs.first();
 	    	theStud = new Student (rs.getString("name"), rs.getInt("id"), (char)(rs.getInt("grade")), rs.getInt("numCourses"));
 		} catch (SQLException e) {
@@ -362,7 +361,7 @@ public class DBController {
     		String query = "SELECT * FROM COURSE where number=?";
     		PreparedStatement pStat = conn.prepareStatement(query);
     		pStat.setInt(1, courseNum);
-    		rs = pStat.executeQuery();
+    		ResultSet rs = pStat.executeQuery();
     		rs.first();
     		theCourse = new Course (rs.getString("name"), rs.getInt("number"), rs.getInt("numberEnrolled"), rs.getInt("status"));
     	} catch (SQLException e) {
