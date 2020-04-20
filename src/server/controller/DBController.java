@@ -44,13 +44,13 @@ public class DBController {
 			//DriverManager.registerDriver(theDriver);
 			Class.forName(driver);
 			//using localHost here
-			String url = "jdbc:oracle:thin:@root:3306/courseReg";
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-					credentialStore.USER, credentialStore.PASS);
+			String url = "jdbc:oracle:thin:@root:3306/coursereg";
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+//					credentialStore.USER, credentialStore.PASS);
 			
 			//ignore this
-//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-//					"root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+					"root", "root");
 			
 			
 			System.out.println("connection accepted");
@@ -378,21 +378,15 @@ public class DBController {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
-		ServerCommunication server = new ServerCommunication(test);
-		server.communicateWithClient();
+		
+		Server server = new Server();
+		server.communicateWithServer(test);
+		
+		
+		
 		//test.createStudentTable();
 		//test.createAdminTable();
 

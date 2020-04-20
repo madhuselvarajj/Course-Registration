@@ -17,7 +17,7 @@ import server.model.Student;
  * The server class that communicates with the client
  *  @author Madhu Selvaraj, Navjot Singh
  */
-public class ServerCommunication {
+public class ServerCommunication implements Runnable{
 	
 	/**
 	 * The socket that will serve as the connection between the client and server
@@ -54,17 +54,15 @@ public class ServerCommunication {
      *It will instantiate the input and output streams as well as the relevant sockets and
      *let the user know when a connection has been achieved.
      */
-	public ServerCommunication(DBController dataBase){
+	public ServerCommunication(Socket aSocket, DBController database){
 		try {
-			serverSocket = new ServerSocket(1011);
-			aSocket = serverSocket.accept();
+//			serverSocket = new ServerSocket(1011);
+			this.aSocket = aSocket;
 			System.out.println("Client connected");
 			out = new ObjectOutputStream(aSocket.getOutputStream());
 			in = new ObjectInputStream(aSocket.getInputStream());
+			this.dataBase = database;
 			
-//			theCatalogue = new CourseCatalogue();
-//			dataBase = new DBController();
-			this.dataBase = dataBase;
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -299,6 +297,12 @@ public class ServerCommunication {
 		
 	}
 	
+	
+	@Override
+	public void run() {
+		communicateWithClient();
+		
+	}
 
 //	public static void main (String [] args) {
 //		ServerCommunication sv = new ServerCommunication();
