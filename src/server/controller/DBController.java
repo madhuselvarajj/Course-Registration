@@ -269,7 +269,7 @@ public class DBController {
     		while (resSet.next()) {
     			if (resSet.getInt("studentID") == studID) {
     				Course theCourse = findCourse (resSet.getInt("courseID"));
-    				output += "enrolled in: " + theCourse.getCourseName() + " " + theCourse.getCourseNum() + "\n";
+    				output += theCourse.getCourseName() + " " + theCourse.getCourseNum() + "\n";
     			}
     		}
     	} catch (SQLException e) {

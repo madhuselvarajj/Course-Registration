@@ -70,7 +70,8 @@ public class MainFrameController {
 				} catch (IOException | ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
-//                mainFrame.displayText (communication.getServerResponse());
+                
+                mainFrame.displayMainFrame(); //returns to main menu after information is displayed
                 
             }
             
@@ -92,6 +93,7 @@ public class MainFrameController {
 				} catch (IOException | ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
+                mainFrame.displayMainFrame(); //returns the main menu after information is displayed
                
             }
         });

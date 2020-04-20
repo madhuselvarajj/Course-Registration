@@ -43,19 +43,19 @@ public class MainFrame extends JFrame{
     /**
      *courseName is a text field prompting for only the name (ex. ENGG)
      */
-    public JTextField courseName = new JTextField ("enter course name");
+    public JTextField courseName = new JTextField ("", 30);
     /**
      *courseNum is a text field prompting for the specific class number (ex. 233)
      */
-    public JTextField courseNum = new JTextField ("enter course number");
+    public JTextField courseNum = new JTextField ("",30);
     /**
      *section is a text field prompting for the specific section pertaining to a course
      */
-    public JTextField section = new JTextField ("enter section number");
+    public JTextField section = new JTextField ("",30);
     /**
      *In order to make changes a student must enter their unique student ID (ex. to add a course)
      */
-    public JTextField studentID = new JTextField ("enter the student ID");
+    public JTextField studentID = new JTextField ("",30);
     /**
      * Search is the JButton which will be used when a student is searching
      * for a particular course in the course catalogue
@@ -95,10 +95,25 @@ public class MainFrame extends JFrame{
     public void searchForCourse() {
         remove(thePanel);
         thePanel = new JPanel();
-        thePanel.add(courseName);
-        thePanel.add(courseNum);
-        thePanel.add(Search);
-        thePanel.add(cancel);
+        
+        JLabel title = new JLabel("Please Enter Course Information", SwingConstants.CENTER);
+        JPanel buttons = new JPanel();
+        buttons.add(Search);
+        buttons.add(cancel);
+        
+        JPanel userInfo = new JPanel();
+        JLabel courseNameLabel = new JLabel("Course Name: ");
+        JLabel courseNumLabel = new JLabel("Course Number: ");
+        
+        userInfo.add(courseNameLabel);
+        userInfo.add(courseName);
+        userInfo.add(courseNumLabel);
+        userInfo.add(courseNum);
+        
+        thePanel.setLayout(new BorderLayout());
+        thePanel.add("North",title);
+        thePanel.add(userInfo,BorderLayout.CENTER);
+        thePanel.add("South",buttons);
         add(thePanel);
         thePanel.setVisible(true);
         setVisible(true);
@@ -110,12 +125,31 @@ public class MainFrame extends JFrame{
     public void addOrRemoveCourse() {
         remove(thePanel);
         thePanel = new JPanel();
-        thePanel.add(courseName);
-        thePanel.add(courseNum);
-        thePanel.add(section);
-        thePanel.add(studentID);
-        thePanel.add(OK);
-        thePanel.add(cancel);
+        
+        JLabel title = new JLabel("Please Enter Course Information", SwingConstants.CENTER);
+        
+        JPanel buttons = new JPanel();
+        buttons.add(OK);
+        buttons.add(cancel);
+        
+        JPanel userInfo = new JPanel();
+        JLabel courseNameLabel = new JLabel("Course Name: ");
+        JLabel courseNumLabel = new JLabel("Course Number: ");
+        JLabel sectionLabel = new JLabel("Section Number: ");
+        JLabel idLabel = new JLabel("Student ID: ");
+        userInfo.add(courseNameLabel);
+        userInfo.add(courseName);
+        userInfo.add(courseNumLabel);
+        userInfo.add(courseNum);
+        userInfo.add(sectionLabel);
+        userInfo.add(section);
+        userInfo.add(idLabel);
+        userInfo.add(studentID);
+        
+        thePanel.setLayout(new BorderLayout());
+        thePanel.add("North",title);
+        thePanel.add(userInfo,BorderLayout.CENTER);
+        thePanel.add("South",buttons);
         add(thePanel);
         thePanel.setVisible(true);
         setVisible(true);
@@ -139,7 +173,10 @@ public class MainFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         
-        
+        courseName.setText("");
+        courseNum.setText("");
+        section.setText("");
+        studentID.setText("");
         JLabel mainLabel = new JLabel ("Please select an option:");
         mainLabel.setBounds(new Rectangle (15, 5, 450, 75));
         

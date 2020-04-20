@@ -268,8 +268,11 @@ public class ServerCommunication implements Runnable{
 		try {	
 			Integer id = Integer.parseInt(studentId); 
 			String output = dataBase.viewAllEnrolled(id);
-			
-			out.writeObject (output);
+			Student theStudent = findStudent(id);
+			if(output.equals(""))
+				out.writeObject(theStudent.getName() + " is not enrolled in anything.");
+			else
+				out.writeObject (theStudent.getName() + " is enrolled in: \n"+output);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
