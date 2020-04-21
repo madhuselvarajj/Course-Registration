@@ -1,5 +1,4 @@
 package server.controller;
-
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -10,47 +9,44 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import server.model.*;
+
 /**
- * Represents the database of the program. Stores all of the courses that are available to register in. Also stores the list of students. 
+ * Represents and controls the database of the program. 
  * @author Madhu Selvaraj, Navjot Singh
  * 
- * should ideally have 3 tables? 
-*course will contain all of the courses offered  - therefore it has a composite key
-*composed of the courseNumber.
-*
-* 
-*student will contain all of the students and their information
-*
-*admin table will have a list of studentID and courseID's which are linked (meaning that student is taking
-*that course)- note that course-student will therefore have 2 primary keys (studentID and courseID) called a
-*composite key. 
- *
  */
 public class DBController {
-	private Connection conn;
-	private Statement theStatement;
+	
 	/**
-	 * the purpose of this is to connect to our course registration database created in mySQL. 
+	 * Connection to the database
+	 */
+	private Connection conn;
+	
+	/**
+	 * Executes a SQL statement
+	 */
+	private Statement theStatement;
+	
+	/**
+	 * Connects to the course registration database created in mySQL. 
 	 */
 	public void startConnection () {
 		String theQuery = new String ("");
 		try {
 			String driver = "com.mysql.cj.jdbc.Driver";
-			//Driver theDriver = new oracle.jdbc.OracleDriver();
-			//DriverManager.registerDriver(theDriver);
 			Class.forName(driver);
+			
 			//using localHost here
-			String url = "jdbc:oracle:thin:@root:3306/courseReg";
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-					credentialStore.USER, credentialStore.PASS);
-			
-			//ignore this
-//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-//					"root", "root");
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+//					credentialStore.USER, credentialStore.PASS);
 			
 			
-			System.out.println("connection accepted");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+					"root", "root");
+			
+			System.out.println("Connection to database accepted");
 			theStatement = conn.createStatement();
+			
 			//rs is what we will use to communicate queries.
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -60,7 +56,7 @@ public class DBController {
 	}
 
     /**
-     * this function will add a student to the STUDENT table in the database
+     * This function will add a student to the STUDENT table in the database
      * @param name the name of the student to add
      * @param ID the students id (primary key)
      * @param grade the grade of the student (will be stored as an ASCII value in the database)
@@ -80,8 +76,9 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
-	 * this function will add a course to the COURSE table in the database
+	 * This function will add a course to the COURSE table in the database
 	 * @param name the name of the course to add
 	 * @param number the course number 
 	 */
@@ -99,12 +96,12 @@ public class DBController {
 			e.printStackTrace();
 		}
 	}
+	
     /**
-     *creates a student table in the coursereg database
+     *Creates a student table in the coursereg database
      */
     public void createStudentTable () {
         try {
-            //startConnection();
             String query = "CREATE TABLE STUDENT (name varchar(255), id integer not NULL, grade integer not NULL, numCourses integer not NULL, PRIMARY KEY(id))";
             Statement Stat = conn.createStatement();
             //execute the prepared statement query
@@ -117,7 +114,7 @@ public class DBController {
 
 
     /**
-     * the admin table will contain a list linking students to the courses which they are taking.
+     * The admin table will contain a list linking students to the courses which they are taking.
      * each new enrollment in a course will create a new admin entry
      */
     public void createAdminTable () {
@@ -129,8 +126,9 @@ public class DBController {
     		e.printStackTrace();
     	}
     }
+    
     /**
-     * this will create the table COURSE in the coursereg database which will contain a list of all 
+     * This will create the table COURSE in the coursereg database which will contain a list of all 
      * available courses to be enrolled in
      */
     public void createCourseTable () {
@@ -145,10 +143,10 @@ public class DBController {
     
     
     /**
-     * this will be called every time a new student enrolls in a course. It will increase the number of students enrolled in that course as well as the number of courses
+     * This method will be called every time a new student enrolls in a course. It will increase the number of students enrolled in that course as well as the number of courses
      * that particular student is enrolled within. 
-     * @param courseNum
-     * @param studentID
+     * @param courseNum the course number which the student is enrolling in
+     * @param studentID the student's id
      */
     public void incrementNumberEnrolled (int courseNum, int studentID) {
     	//first let's increment the number of students enrolled in that course.
@@ -191,7 +189,7 @@ public class DBController {
     }
     
     /**
-     * this will be called every time a student decides to drop a course. It will decrease both the number of students enrolled
+     * This will be called every time a student decides to drop a course. It will decrease both the number of students enrolled
      * in that course from the course database as well as the number of courses that student is shown to 
      * be enrolled in. 
      * @param courseNum the course number which the student is unenrolling from
@@ -240,7 +238,7 @@ public class DBController {
 
 
     /**
-     * this function will be used to remove a student-course relationship from the admin table
+     * This function will be used to remove a student-course relationship from the admin table
      */
     public void unenrollInCourse (int studID, int courseID) {
     	String query = "DELETE FROM ADMIN WHERE studentID = ? AND courseID = ?";
@@ -256,7 +254,7 @@ public class DBController {
     	decrementNumberEnrolled(courseID, studID);
     }
     /**
-     * this will return a string containing all of the courses which a student is currently enrolled in
+     * This will return a string containing all of the courses which a student is currently enrolled in
      * @param studID the id of the student requesting the information
      * @return the string object containing all courses the student is enrolled in
      */
@@ -278,7 +276,7 @@ public class DBController {
     	return output;
     }
     /**
-     * this will display all the courses in a string which are available currently in the COURSE databse
+     * This will display all the courses in a string which are available currently in the COURSE database
      * @return a string containing all courses
      */
     public String viewAllCourses () {
@@ -304,7 +302,7 @@ public class DBController {
     
     
     /**
-     * this will be used to enroll a student in a course by creating a new student-course relationship
+     * This will be used to enroll a student in a course by creating a new student-course relationship
      * in the admin table
      * @param studID the student id to enroll in the course
      * @param courseID the course id the student would like to enroll in
@@ -330,7 +328,7 @@ public class DBController {
     }
     
     /**
-     * this will return a student object from the database who has the id speicified
+     * This will return a student object from the database who has the id specified
      * @param id the student id to find from the database
      * @return the student object
      */
@@ -350,7 +348,7 @@ public class DBController {
     }
     
     /**
-     * this will return a course object relating to the course with the coursenum as specified in the 
+     * This will return a course object relating to the course with the course num as specified in the 
      * parameters
      * @param courseNum the number of the course which will be searched for
      * @return the course object containing that course number
@@ -370,7 +368,7 @@ public class DBController {
     	return theCourse;
     }
     /**
-     * this will add 10 entries to the STUDENT table
+     * This will add 10 entries to the STUDENT table
      */
     public void populateStudents () {
     	addStudent ("Bob", 1000, 'B');
@@ -385,7 +383,7 @@ public class DBController {
     	addStudent ("Cam", 10000, 'D');
     }
     /**
-     * this will add 6 entries to the COURSE table
+     * This will add 6 entries to the COURSE table
      */
     public void populateCourses() {
     	addCourse ("ENGG", 233);
@@ -397,7 +395,10 @@ public class DBController {
     	
     }
     
-    
+    /**
+     * Starts the server of the program
+     * @param args
+     */
 	public static void main ( String args[]) {
 		DBController test = new DBController();
 		test.startConnection();
@@ -406,16 +407,11 @@ public class DBController {
 		Server server = new Server();
 		server.communicateWithServer(test);
 		
-		
-		
+		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createStudentTable();
 		//test.createAdminTable();
-
-		//test.populateStudents();
-//		System.out.println(test.viewAllEnrolled(2000));
-		//UNCOMMENT THE FOLLOWING LINES THE FIRST TIME YOU RUN THE PROG
 		//test.createCourseTable();
-		//test.createOfferingTable();
+		//test.populateStudents();
 		//test.populateCourses();
 		
 	}

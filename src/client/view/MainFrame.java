@@ -171,7 +171,7 @@ public class MainFrame extends JFrame{
         setSize(500,500);
         //frame only terminates properly when exit button is pressed
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        this.setResizable(false);
         
         courseName.setText("");
         courseNum.setText("");

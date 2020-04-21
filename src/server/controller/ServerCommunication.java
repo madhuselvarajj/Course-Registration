@@ -25,11 +25,6 @@ public class ServerCommunication implements Runnable{
 	private Socket aSocket;
 	
 	/**
-	 * serverSocket accepts connections and builds sockets 
-	 */
-	private ServerSocket serverSocket;
-	
-	/**
 	 * The output stream, used to send information to the client
 	 */
 	private ObjectOutputStream out;
@@ -44,19 +39,22 @@ public class ServerCommunication implements Runnable{
 	 */
 	private DBController dataBase;
 	
-	/**
-	 * Instance of CourseCatalogue that will be sent to the database and initialized 
-	 */
-	private CourseCatalogue theCatalogue;
     
     /**
-     *this is the default constructor which will create a new serverSocket with port num 1010.
+     *this is the default constructor which will create a new serverSocket with port num 1011.
      *It will instantiate the input and output streams as well as the relevant sockets and
      *let the user know when a connection has been achieved.
      */
+	
+	/**
+	 *this is the default constructor which will create a new serverSocket with port num 1011.
+     *It will instantiate the input and output streams as well as the relevant sockets and
+     *let the user know when a connection has been achieved.
+	 * @param aSocket Socket that connects to the client
+	 * @param database Instance of the database that contains all the records
+	 */
 	public ServerCommunication(Socket aSocket, DBController database){
 		try {
-//			serverSocket = new ServerSocket(1011);
 			this.aSocket = aSocket;
 			System.out.println("Client connected");
 			out = new ObjectOutputStream(aSocket.getOutputStream());
@@ -192,7 +190,10 @@ public class ServerCommunication implements Runnable{
 			Integer sectionNum = Integer.parseInt(secNum);
 			courseName = courseName.toUpperCase();
 			Student theStudent = findStudent(id);
-			
+			if(theStudent == null) {
+				out.writeObject("Id invalid");
+				return;
+			}
 			dataBase.enrollInCourse (id, courseNum, sectionNum);
 			
 			String output = courseName + " "+courseNum+ " was added to " + theStudent.getName() + "'s courses";
@@ -269,6 +270,11 @@ public class ServerCommunication implements Runnable{
 			Integer id = Integer.parseInt(studentId); 
 			String output = dataBase.viewAllEnrolled(id);
 			Student theStudent = findStudent(id);
+			if(theStudent == null) {
+				out.writeObject("ID invalid");
+				return;
+			}
+				
 			if(output.equals(""))
 				out.writeObject(theStudent.getName() + " is not enrolled in anything.");
 			else
@@ -279,9 +285,6 @@ public class ServerCommunication implements Runnable{
 		}
 		
 	}
-
-	
-
 	
     /**
      *findCourse will return the Course object with the specified courseNum and name
@@ -315,8 +318,4 @@ public class ServerCommunication implements Runnable{
 		
 	}
 
-//	public static void main (String [] args) {
-//		ServerCommunication sv = new ServerCommunication();
-//		sv.communicateWithClient();
-//	}
 }

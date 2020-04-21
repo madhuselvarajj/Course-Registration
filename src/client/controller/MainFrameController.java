@@ -1,21 +1,24 @@
 package client.controller;
 
 import java.awt.event.ActionEvent;
+
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import server.model.Student; //doesn't work with client.model.Student and I think it is supposed to
 import client.view.MainFrame;
 /**
- * Creates the GUI for the main frame of the application
+ * Controls the GUI for the main frame of the application.
  * @author Navjot Singh, Madhu Selvaraj
  *
  */
 public class MainFrameController {
+	
     /**
      *the GUI frame which the actionListeners will be tracking
      */
     public MainFrame mainFrame;
+    
     /**
      *communication will be used to communicate with the server sockets when an actionevent occurs.
      */
@@ -60,18 +63,15 @@ public class MainFrameController {
                 //since the codes will be sent out first, for each of these performed it will
                 //automatically display the response on the GUI depending on what button
                 //was pressed prior to pressing the OK (ex delete vs add course)
-                try {
-					communication.out.writeObject(mainFrame.courseName.getText());
-					communication.out.writeObject(mainFrame.courseNum.getText());
-					String response = (String)communication.in.readObject();
-					System.out.println(response);
-//		            mainFrame.displayText(response);
-					mainFrame.displayMessage(response);
-				} catch (IOException | ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}
-                
-                mainFrame.displayMainFrame(); //returns to main menu after information is displayed
+         
+            	communication.writeToServer(mainFrame.courseName.getText(), mainFrame.courseNum.getText());
+
+            	String response = communication.getServerResponse();
+				System.out.println(response);
+
+				mainFrame.displayMessage(response);
+				
+            	mainFrame.displayMainFrame(); //returns to main menu after information is displayed
                 
             }
             
@@ -82,17 +82,10 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed (ActionEvent e) {
-            
-                try {
-					communication.out.writeObject(mainFrame.studentID.getText());
-	                communication.out.writeObject(mainFrame.courseName.getText());
-	                communication.out.writeObject(mainFrame.courseNum.getText());
-	                communication.out.writeObject(mainFrame.section.getText());
-	                String response = (String)communication.in.readObject();
-	                mainFrame.displayMessage(response);
-				} catch (IOException | ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}
+               	communication.writeToServer(mainFrame.studentID.getText(), mainFrame.courseName.getText(), mainFrame.courseNum.getText(),mainFrame.section.getText());
+                String response = communication.getServerResponse();
+                
+	            mainFrame.displayMessage(response);
                 mainFrame.displayMainFrame(); //returns the main menu after information is displayed
                
             }
@@ -105,12 +98,10 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed (ActionEvent e) {
-                try {
-					communication.out.writeObject(mainFrame.studentID.getText());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-                mainFrame.displayMessage(communication.getServerResponse());
+
+                communication.writeToServer(mainFrame.studentID.getText());
+                String response = communication.getServerResponse();
+                mainFrame.displayMessage(response);
             }
             
         });
@@ -122,13 +113,8 @@ public class MainFrameController {
            
             @Override
             public void actionPerformed(ActionEvent e) {
-            	try {
-            		System.out.println("pressed cancel");
-					communication.out.writeObject(7);
-            		communication.in.readObject();
-				} catch (ClassNotFoundException | IOException e1) {
-					e1.printStackTrace();
-				}
+            	communication.sendCode(7);
+            	communication.getServerResponse();
                 mainFrame.displayMainFrame();
             }
             
@@ -141,11 +127,8 @@ public class MainFrameController {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-            	try {
-					communication.out.writeObject(1);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+
+			    communication.sendCode(1);
                 mainFrame.searchForCourse();
                 //we send the code and then OK's actionListener in askForCourseInfo() will
                 //automatically send the nessecary info to the server socket and display the
@@ -206,20 +189,14 @@ public class MainFrameController {
             public void actionPerformed(ActionEvent e) {
                 communication.sendCode(5);
                 String userInput = mainFrame.viewAllCourses();
-                try {
-                	if(userInput==null) { //userInput will be null if the user presses cancel
-                		communication.out.writeObject(7);
-                		System.out.println(communication.getServerResponse());
-                	}else {
-                		communication.out.writeObject(userInput);
-                		mainFrame.displayMessage(communication.getServerResponse());
-                	}
-						
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
                 
-                
+            	if(userInput==null) { //userInput will be null if the user presses cancel
+            		communication.sendCode(7);
+            		System.out.println(communication.getServerResponse());
+            	}else {
+            		communication.writeToServer(userInput);
+            		mainFrame.displayMessage(communication.getServerResponse());
+            	}
             }
             
         });
