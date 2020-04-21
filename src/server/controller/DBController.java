@@ -40,7 +40,7 @@ public class DBController {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
 					credentialStore.USER, credentialStore.PASS);
 			
-			
+			//use if username and password is root 
 //			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
 //					"root", "root");
 			
