@@ -37,12 +37,12 @@ public class DBController {
 			Class.forName(driver);
 			
 			//using localHost here
-//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-//					credentialStore.USER, credentialStore.PASS);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseReg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+					credentialStore.USER, credentialStore.PASS);
 			
 			
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
-					"root", "root");
+//			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/coursereg?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", 
+//					"root", "root");
 			
 			System.out.println("Connection to database accepted");
 			theStatement = conn.createStatement();
