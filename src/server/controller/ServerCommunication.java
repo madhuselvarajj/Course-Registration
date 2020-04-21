@@ -94,7 +94,7 @@ public class ServerCommunication implements Runnable{
 					}
 					
 					else if(code == 6) { //code 6: terminate program because user wants to exit
-						out.writeObject("Bye");
+						out.writeObject("Bye!");
 						break;
 					}
 					

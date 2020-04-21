@@ -19,27 +19,27 @@ public class MainFrame extends JFrame{
     /**
      *searchCat is used to search for a course in the course catalogue
      */
-    public JButton searchCat = new JButton("Search catalogue courses");
+    public JButton searchCat = new JButton("Search the Catalogue for a Course");
     /**
      *addCourse is used when a student wants to add a course to their current course listing
      */
-    public JButton addCourse = new JButton("Add course to student courses");
+    public JButton addCourse = new JButton("Enroll in a Course");
     /**
      *removeCourse is used when a student wants to remove a course from their current course listing
      */
-    public JButton removeCourse = new JButton ("Remove course from student courses");
+    public JButton removeCourse = new JButton ("Unenroll in a Course");
     /**
      *viewAllCat is used to view all courses available to enroll in
      */
-    public JButton viewAllCat = new JButton ("View all courses in catalogue");
+    public JButton viewAllCat = new JButton ("View all Courses in the Catalogue");
     /**
      *viewAllStud is used to view all courses that one particular student is taking
      */
-    public JButton viewAllStud = new JButton ("View all courses taken by student");
+    public JButton viewAllStud = new JButton ("View all Enrolled Courses");
     /**
      *exit is used when a student would like to exit the main menu and terminate the program
      */
-    public JButton exit = new JButton("exit");
+    public JButton exit = new JButton("Exit");
     /**
      *courseName is a text field prompting for only the name (ex. ENGG)
      */
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame{
      *when a student chooses an option from the main menu but would like to return to the
      *main menu, they will hit cancel.
      */
-    public JButton cancel = new JButton ("Cancel/Return");
+    public JButton cancel = new JButton ("Cancel");
     /**
      *this is the only JPanel used in the JFrame (continually flushed in functions).
      */

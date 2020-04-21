@@ -209,14 +209,16 @@ public class MainFrameController {
                 try {
                 	if(userInput==null) { //userInput will be null if the user presses cancel
                 		communication.out.writeObject(7);
+                		System.out.println(communication.getServerResponse());
                 	}else {
                 		communication.out.writeObject(userInput);
+                		mainFrame.displayMessage(communication.getServerResponse());
                 	}
 						
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-                mainFrame.displayMessage(communication.getServerResponse());
+                
                 
             }
             
